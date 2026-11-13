@@ -311,8 +311,8 @@ footer { font-size: 13px; color: var(--muted); border-top: .5px solid var(--hair
   <div class="view" id="view-timeline" role="tabpanel" aria-labelledby="tab-timeline">
   <div class="controls">
     <div class="row" role="group" aria-label="Timeline order">
-      <button class="chip" id="o-desc" data-order="desc" aria-pressed="true">Newest first</button>
-      <button class="chip" id="o-asc" data-order="asc" aria-pressed="false">Oldest first</button>
+      <button class="chip" id="o-desc" data-order="desc" aria-pressed="true">Newest entries first</button>
+      <button class="chip" id="o-asc" data-order="asc" aria-pressed="false">Oldest entries first</button>
     </div>
     <div class="row" id="filters" role="group" aria-label="Filter entries by type">
       <button class="chip" id="f-all" data-kind="all" aria-pressed="true">All<span class="n" id="n-all">0</span></button>
@@ -466,12 +466,11 @@ window.GSW_FEEDBACK_URL = "https://github.com/HubCatz202/faa-ground-stop-watch/i
       var t = time(it); if (t < g.first) g.first = t; if (t > g.last) g.last = t;
     });
     var list = keys.map(function (k) { return groups[k]; });
-    /* Events carry a sequence number ("3. Official statements"). Sections follow that
-       number in the chosen direction; the chip row always runs 1, 2, 3 and up. */
+    /* Events carry a sequence number ("3. Official statements"). Sections and the chip row always run 1, 2, 3
+       and up; the order toggle only flips the entries inside each event. */
     list.forEach(function (g) { var mm = /^(\d+)\./.exec(g.key); g.num = mm ? Number(mm[1]) : 9999; });
     list.sort(function (a, b) { return (a.num - b.num) || (a.first - b.first); });
     var chipOrder = list.slice();
-    if (order !== "asc") list.reverse();
 
     if (eventFilter && !groups[eventFilter]) eventFilter = "";
     var allBtn = node("button", "chip", "All events"); allBtn.type = "button";
