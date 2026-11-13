@@ -184,7 +184,11 @@ h1 { font-family: var(--display); font-weight: 600; font-size: 19px; letter-spac
 /* Segmented control */
 .tabs { display: inline-flex; align-self: flex-start; gap: 2px; padding: 3px; border-radius: 999px; background: var(--fill); }
 .tab { font-family: var(--body); font-weight: 500; font-size: 15px; letter-spacing: -.01em; color: var(--ink); background: transparent; border: 0; border-radius: 999px; padding: 7px 20px; min-height: 36px; cursor: pointer; transition: background-color .25s var(--ease), box-shadow .25s var(--ease); }
-.tab[aria-selected="true"] { background: var(--glass-strong); box-shadow: 0 1px 2px rgba(0, 0, 0, .1), 0 3px 10px rgba(0, 0, 0, .08), inset 0 .5px 0 var(--rim); font-weight: 600; }
+.tab { color: var(--muted); }
+.tab[aria-selected="true"] { background: var(--accent); color: #fff; box-shadow: 0 1px 2px rgba(0, 0, 0, .18), 0 4px 12px color-mix(in srgb, var(--accent) 35%, transparent); font-weight: 600; }
+.tab[aria-selected="true"] .n { color: inherit; opacity: .85; }
+:root[data-theme="dark"] .tab[aria-selected="true"] { color: #00152B; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .tab[aria-selected="true"] { color: #00152B; } }
 .tab .n { font-size: 12px; font-weight: 600; color: var(--muted); margin-left: 6px; font-variant-numeric: tabular-nums; }
 
 .view { display: flex; flex-direction: column; gap: 18px; }
@@ -199,6 +203,10 @@ h1 { font-family: var(--display); font-weight: 600; font-size: 19px; letter-spac
 .ev-num { position: absolute; left: -30px; top: 11px; width: 24px; height: 24px; border-radius: 50%; background: var(--ink); color: var(--paper); font-weight: 600; font-size: 12px; display: flex; align-items: center; justify-content: center; font-variant-numeric: tabular-nums; }
 .ev-head h3 { font-family: var(--display); font-weight: 600; font-size: 21px; line-height: 1.2; letter-spacing: -.022em; margin: 0; text-wrap: balance; }
 .ev-range { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.event.flat::before { top: 6px; }
+.hour { list-style: none; position: relative; font-size: 13px; font-weight: 600; color: var(--muted); padding: 6px 0 0; font-variant-numeric: tabular-nums; }
+.hour::before { content: ""; position: absolute; left: -24px; top: 11px; width: 11px; height: 11px; border-radius: 50%; background: var(--ink); }
+.thread { color: var(--muted); font-weight: 500; }
 .entries { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
 .entry { position: relative; display: flex; flex-direction: column; gap: 6px; }
 .entry::before { content: ""; position: absolute; left: -22px; top: 6px; width: 7px; height: 7px; border-radius: 50%; background: var(--paper); border: 1.5px solid var(--muted); }
@@ -300,7 +308,7 @@ footer { font-size: 13px; color: var(--muted); border-top: .5px solid var(--hair
 
   <details class="howto" id="howto">
     <summary>How to use this tracker</summary>
-    <p>The card above says whether the ground stop is still in effect and when the feed was last checked. <strong>Timeline</strong> files every update under a numbered event: tap an event to see only that one, or Official, News or Social to see one kind of source. <strong>Trending</strong> ranks what people are talking about, and the cards move as attention shifts. A fresh pass over news and social sources runs about every 5 minutes and new entries appear on their own, so there is no need to reload. Anything marked Unverified has not been confirmed by an official source. <a href="https://github.com/HubCatz202/faa-ground-stop-watch#readme" target="_blank" rel="noopener">How it works, in the README</a></p>
+    <p>The card above says whether the ground stop is still in effect and when the feed was last checked. <strong>Timeline</strong> lists every update in time order with the newest at the top; tap Official, News or Social to see one kind of source. <strong>Trending</strong> ranks what people are talking about, and the cards move as attention shifts. A fresh pass over news and social sources runs about every 5 minutes and new entries appear on their own, so there is no need to reload. Anything marked Unverified has not been confirmed by an official source. <a href="https://github.com/HubCatz202/faa-ground-stop-watch#readme" target="_blank" rel="noopener">How it works, in the README</a></p>
   </details>
 
   <div class="tabs" role="tablist" aria-label="Views">
@@ -310,19 +318,11 @@ footer { font-size: 13px; color: var(--muted); border-top: .5px solid var(--hair
 
   <div class="view" id="view-timeline" role="tabpanel" aria-labelledby="tab-timeline">
   <div class="controls">
-    <div class="row" role="group" aria-label="Timeline order">
-      <button class="chip" id="o-desc" data-order="desc" aria-pressed="true">Newest entries first</button>
-      <button class="chip" id="o-asc" data-order="asc" aria-pressed="false">Oldest entries first</button>
-    </div>
     <div class="row" id="filters" role="group" aria-label="Filter entries by type">
       <button class="chip" id="f-all" data-kind="all" aria-pressed="true">All<span class="n" id="n-all">0</span></button>
       <button class="chip" id="f-official" data-kind="official" aria-pressed="false">Official<span class="n" id="n-official">0</span></button>
       <button class="chip" id="f-news" data-kind="news" aria-pressed="false">News<span class="n" id="n-news">0</span></button>
       <button class="chip" id="f-social" data-kind="social" aria-pressed="false">Social<span class="n" id="n-social">0</span></button>
-    </div>
-    <div>
-      <div class="label">Events in sequence &middot; badge = number of entries</div>
-      <div class="jump" id="jump" role="group" aria-label="Show one event"></div>
     </div>
   </div>
 
@@ -441,12 +441,9 @@ window.GSW_FEEDBACK_URL = "https://github.com/HubCatz202/faa-ground-stop-watch/i
       el("n-" + k).textContent = counts[k];
       el("f-" + k).setAttribute("aria-pressed", String(filter === k));
     });
-    el("o-desc").setAttribute("aria-pressed", String(order === "desc"));
-    el("o-asc").setAttribute("aria-pressed", String(order === "asc"));
 
-    var tl = el("timeline"), note = el("note"), jump = el("jump");
-    var keepScroll = jump.scrollLeft;
-    tl.textContent = ""; jump.textContent = "";
+    var tl = el("timeline"), note = el("note");
+    tl.textContent = "";
     var shown = items.filter(function (it) { return filter === "all" || it.kind === filter; });
     if (!shown.length) {
       note.hidden = false;
@@ -457,59 +454,24 @@ window.GSW_FEEDBACK_URL = "https://github.com/HubCatz202/faa-ground-stop-watch/i
     }
     note.hidden = true;
 
-    var sign = order === "asc" ? 1 : -1;
-    var groups = {}, keys = [];
-    shown.forEach(function (it) {
-      var k = it.event || "Other developments";
-      if (!groups[k]) { groups[k] = { key: k, items: [], first: Infinity, last: -Infinity }; keys.push(k); }
-      var g = groups[k]; g.items.push(it);
-      var t = time(it); if (t < g.first) g.first = t; if (t > g.last) g.last = t;
-    });
-    var list = keys.map(function (k) { return groups[k]; });
-    /* Events carry a sequence number ("3. Official statements"). Sections and the chip row always run 1, 2, 3
-       and up; the order toggle only flips the entries inside each event. */
-    list.forEach(function (g) { var mm = /^(\d+)\./.exec(g.key); g.num = mm ? Number(mm[1]) : 9999; });
-    list.sort(function (a, b) { return (a.num - b.num) || (a.first - b.first); });
-    var chipOrder = list.slice();
-
-    if (eventFilter && !groups[eventFilter]) eventFilter = "";
-    var allBtn = node("button", "chip", "All events"); allBtn.type = "button";
-    allBtn.setAttribute("aria-pressed", String(!eventFilter));
-    allBtn.addEventListener("click", function () { eventFilter = ""; render(null); });
-    jump.appendChild(allBtn);
-
-    chipOrder.forEach(function (g) {
-      var cm = /^(\d+)\.\s*(.*)$/.exec(g.key);
-      var jb = node("button", "chip"); jb.type = "button";
-      jb.setAttribute("aria-pressed", String(eventFilter === g.key));
-      if (cm) jb.appendChild(node("b", "", cm[1] + "."));
-      jb.appendChild(document.createTextNode(cm ? cm[2] : g.key));
-      var cnt = node("span", "cnt", String(g.items.length));
-      cnt.title = g.items.length + (g.items.length === 1 ? " entry" : " entries"); cnt.setAttribute("aria-label", cnt.title);
-      jb.appendChild(cnt);
-      jb.addEventListener("click", function () { eventFilter = eventFilter === g.key ? "" : g.key; render(null); });
-      jump.appendChild(jb);
-    });
-
-    list.forEach(function (g, i) {
-      g.items.sort(function (a, b) { return sign * (time(a) - time(b)); });
-      var m = /^(\d+)\.\s*(.*)$/.exec(g.key);
-      var num = m ? m[1] : "•", name = m ? m[2] : g.key;
-      var id = "ev-" + i;
-
-      if (eventFilter && eventFilter !== g.key) return;
-
-      var sec = node("section", "event"); sec.id = id;
-      var head = node("div", "ev-head");
-      head.appendChild(node("span", "ev-num", num));
-      head.appendChild(node("h3", "", name));
-      var a = new Date(g.first), b = new Date(g.last);
-      head.appendChild(node("div", "ev-range", local(a) + (g.last !== g.first ? " to " + local(b) : "") + " · " + g.items.length + (g.items.length === 1 ? " entry" : " entries")));
-      sec.appendChild(head);
-
+    /* One continuous timeline, newest at the top, ordered only by time. A divider marks
+       each new hour so the pace of events is readable at a glance. */
+    var sorted = shown.slice().sort(function (a, b) { return time(b) - time(a); });
+    var g = { items: sorted };
+    var lastHour = null;
+    (function () {
+      var sec = node("section", "event flat");
       var ol = node("ol", "entries");
       g.items.forEach(function (it) {
         var isNew = fresh && fresh[it.id];
+        if (it.date) {
+          var hk = it.date.getFullYear() + "-" + it.date.getMonth() + "-" + it.date.getDate() + "-" + it.date.getHours();
+          if (hk !== lastHour) {
+            lastHour = hk;
+            var hr = node("li", "hour", it.date.toLocaleTimeString([], { hour: "numeric" }) + " \u00b7 " + it.date.toLocaleDateString([], { weekday: "short", month: "short", day: "numeric" }));
+            ol.appendChild(hr);
+          }
+        }
         var li = node("li", "entry " + it.kind + (isNew ? " new" : ""));
         var when = node("div", "when");
         if (it.date) {
@@ -521,6 +483,8 @@ window.GSW_FEEDBACK_URL = "https://github.com/HubCatz202/faa-ground-stop-watch/i
         var card = node("div", "card");
         var meta = node("div", "meta");
         meta.appendChild(node("span", "kind " + it.kind, (KIND[it.kind] || "Update") + (it.platform ? " · " + it.platform : "")));
+        var evn = /^(\d+)\.\s*(.*)$/.exec(it.event || "");
+        if (it.event) meta.appendChild(node("span", "thread", evn ? evn[2] : it.event));
         if (CONF[it.confidence]) meta.appendChild(node("span", "conf " + it.confidence, CONF[it.confidence]));
         card.appendChild(meta);
         card.appendChild(node("h4", "", it.title));
@@ -533,8 +497,7 @@ window.GSW_FEEDBACK_URL = "https://github.com/HubCatz202/faa-ground-stop-watch/i
       });
       sec.appendChild(ol);
       tl.appendChild(sec);
-    });
-    jump.scrollLeft = keepScroll;
+    })();
   }
 
   ["all", "official", "news", "social"].forEach(function (k) {
@@ -544,14 +507,6 @@ window.GSW_FEEDBACK_URL = "https://github.com/HubCatz202/faa-ground-stop-watch/i
       render(null);
     });
   });
-  ["desc", "asc"].forEach(function (o) {
-    el("o-" + o).addEventListener("click", function () {
-      order = o;
-      try { localStorage.setItem("gsw-order", order); } catch (err) {}
-      render(null);
-    });
-  });
-
   function setView(v, push) {
     view = v === "trending" ? "trending" : "timeline";
     el("view-timeline").hidden = view !== "timeline";
