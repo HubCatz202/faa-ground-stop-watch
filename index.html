@@ -82,6 +82,9 @@ h1 { font-family: var(--display); font-weight: 700; font-size: 22px; letter-spac
 .jump .chip { font-size: 13px; padding: 5px 11px; flex: none; }
 .jump .chip b { font-family: var(--mono); font-weight: 600; color: var(--accent); margin-right: 6px; }
 .jump .chip[aria-pressed="true"] b { color: var(--panel); }
+.cnt { display: inline-block; min-width: 20px; margin-left: 8px; padding: 0 6px; border-radius: 999px; background: var(--rule); color: var(--ink); font-family: var(--mono); font-size: 11px; line-height: 18px; text-align: center; font-variant-numeric: tabular-nums; }
+.chip .n { display: inline-block; min-width: 20px; margin-left: 8px; padding: 0 6px; border-radius: 999px; background: var(--rule); color: var(--ink); line-height: 18px; text-align: center; }
+.chip[aria-pressed="true"] .n, .chip[aria-pressed="true"] .cnt { background: var(--panel); color: var(--accent); opacity: 1; }
 .label { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 
 /* Timeline */
@@ -210,7 +213,7 @@ footer { font-size: 13px; color: var(--muted); }
       <button class="chip" id="f-social" data-kind="social" aria-pressed="false">Social<span class="n" id="n-social">0</span></button>
     </div>
     <div>
-      <div class="label">Events</div>
+      <div class="label">Events in sequence &middot; badge = number of entries</div>
       <div class="jump" id="jump" role="group" aria-label="Show one event"></div>
     </div>
   </div>
@@ -355,7 +358,12 @@ window.GSW_FEEDBACK_URL = "https://github.com/HubCatz202/faa-ground-stop-watch/i
       var t = time(it); if (t < g.first) g.first = t; if (t > g.last) g.last = t;
     });
     var list = keys.map(function (k) { return groups[k]; });
-    list.sort(function (a, b) { return order === "asc" ? a.first - b.first : b.last - a.last; });
+    /* Events carry a sequence number ("3. Official statements"). Sections follow that
+       number in the chosen direction; the chip row always runs 1, 2, 3 and up. */
+    list.forEach(function (g) { var mm = /^(\d+)\./.exec(g.key); g.num = mm ? Number(mm[1]) : 9999; });
+    list.sort(function (a, b) { return (a.num - b.num) || (a.first - b.first); });
+    var chipOrder = list.slice();
+    if (order !== "asc") list.reverse();
 
     if (eventFilter && !groups[eventFilter]) eventFilter = "";
     var allBtn = node("button", "chip", "All events"); allBtn.type = "button";
@@ -363,18 +371,25 @@ window.GSW_FEEDBACK_URL = "https://github.com/HubCatz202/faa-ground-stop-watch/i
     allBtn.addEventListener("click", function () { eventFilter = ""; render(null); });
     jump.appendChild(allBtn);
 
+    chipOrder.forEach(function (g) {
+      var cm = /^(\d+)\.\s*(.*)$/.exec(g.key);
+      var jb = node("button", "chip"); jb.type = "button";
+      jb.setAttribute("aria-pressed", String(eventFilter === g.key));
+      if (cm) jb.appendChild(node("b", "", cm[1] + "."));
+      jb.appendChild(document.createTextNode(cm ? cm[2] : g.key));
+      var cnt = node("span", "cnt", String(g.items.length));
+      cnt.title = g.items.length + (g.items.length === 1 ? " entry" : " entries"); cnt.setAttribute("aria-label", cnt.title);
+      jb.appendChild(cnt);
+      jb.addEventListener("click", function () { eventFilter = eventFilter === g.key ? "" : g.key; render(null); });
+      jump.appendChild(jb);
+    });
+
     list.forEach(function (g, i) {
       g.items.sort(function (a, b) { return sign * (time(a) - time(b)); });
       var m = /^(\d+)\.\s*(.*)$/.exec(g.key);
       var num = m ? m[1] : "•", name = m ? m[2] : g.key;
       var id = "ev-" + i;
 
-      var jb = node("button", "chip"); jb.type = "button";
-      jb.appendChild(node("b", "", num)); jb.appendChild(document.createTextNode(name));
-      jb.setAttribute("aria-pressed", String(eventFilter === g.key));
-      jb.appendChild(node("span", "n", String(g.items.length)));
-      jb.addEventListener("click", function () { eventFilter = eventFilter === g.key ? "" : g.key; render(null); });
-      jump.appendChild(jb);
       if (eventFilter && eventFilter !== g.key) return;
 
       var sec = node("section", "event"); sec.id = id;
