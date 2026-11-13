@@ -131,8 +131,6 @@ h1 { font-family: var(--display); font-weight: 600; font-size: 19px; letter-spac
 .chip:hover { background: var(--fill-strong); }
 .chip:active { transform: scale(.97); }
 .chip[aria-pressed="true"], .chip.primary { background: var(--accent); color: #fff; }
-:root[data-theme="dark"] .chip[aria-pressed="true"], :root[data-theme="dark"] .chip.primary { color: #00152B; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .chip[aria-pressed="true"], :root:not([data-theme="light"]) .chip.primary { color: #00152B; } }
 .chip:disabled { opacity: .45; cursor: default; }
 .chip .n, .cnt {
   display: inline-block; min-width: 20px; margin-left: 8px; padding: 0 6px; border-radius: 999px;
@@ -187,8 +185,7 @@ h1 { font-family: var(--display); font-weight: 600; font-size: 19px; letter-spac
 .tab { color: var(--muted); }
 .tab[aria-selected="true"] { background: var(--accent); color: #fff; box-shadow: 0 1px 2px rgba(0, 0, 0, .18), 0 4px 12px color-mix(in srgb, var(--accent) 35%, transparent); font-weight: 600; }
 .tab[aria-selected="true"] .n { color: inherit; opacity: .85; }
-:root[data-theme="dark"] .tab[aria-selected="true"] { color: #00152B; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .tab[aria-selected="true"] { color: #00152B; } }
+
 .tab .n { font-size: 12px; font-weight: 600; color: var(--muted); margin-left: 6px; font-variant-numeric: tabular-nums; }
 
 .view { display: flex; flex-direction: column; gap: 18px; }
@@ -270,6 +267,33 @@ footer { font-size: 13px; color: var(--muted); border-top: .5px solid var(--hair
 @media (prefers-contrast: more) {
   :root { --hair: rgba(0, 0, 0, .45); --muted: #3A3A3C; }
 }
+
+/* Selected controls carry a blue-to-indigo gradient. White text on either end is above 4.5:1. */
+:root { --grad: linear-gradient(135deg, #0A6FE0 0%, #5B4BDB 100%); --grad-glow: 0 1px 2px rgba(0, 0, 0, .18), 0 6px 18px rgba(64, 86, 220, .38); }
+.chip[aria-pressed="true"], .chip.primary, .tab[aria-selected="true"] { background: var(--grad); color: #fff; box-shadow: var(--grad-glow); }
+.chip[aria-pressed="true"]:hover, .chip.primary:hover { background: var(--grad); filter: brightness(1.08); }
+.heat i { background: var(--grad); }
+.hour::before { background: var(--grad); }
+.topic:first-child .rank { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 600; }
+.topic.open { box-shadow: inset 0 .5px 0 var(--rim), 0 0 0 1px color-mix(in srgb, #5B4BDB 45%, transparent), var(--shadow); }
+
+/* Trending: expandable source list */
+.topic { cursor: pointer; }
+.t-more { align-self: flex-start; font: inherit; font-size: 14px; font-weight: 500; color: var(--accent); background: none; border: 0; padding: 2px 0; cursor: pointer; }
+.t-more::after { content: " \203A"; display: inline-block; transition: transform .25s var(--ease); margin-left: 2px; }
+.topic.open .t-more::after { transform: rotate(90deg); }
+.voices { display: flex; flex-direction: column; gap: 14px; border-top: .5px solid var(--hair); padding-top: 12px; margin-top: 2px; cursor: default; }
+.voices h4 { margin: 0 0 6px; font-size: 12px; font-weight: 600; letter-spacing: .02em; text-transform: uppercase; }
+.voices .v-official h4 { color: var(--accent); }
+.voices .v-news h4 { color: var(--ink); }
+.voices .v-social h4 { color: var(--social); }
+.voices ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.voices li { font-size: 15px; line-height: 1.35; }
+.voices a { color: var(--ink); font-weight: 500; text-decoration: underline; text-decoration-color: var(--hair); text-underline-offset: 3px; }
+.voices a:hover { color: var(--accent); text-decoration-color: currentColor; }
+.voices .v-src { display: block; font-size: 13px; color: var(--muted); }
+.voices .v-none { font-size: 14px; color: var(--muted); }
+.voices .v-flag { color: var(--warn); font-weight: 600; }
 </style>
 </head>
 <body>
@@ -311,7 +335,7 @@ footer { font-size: 13px; color: var(--muted); border-top: .5px solid var(--hair
 
   <details class="howto" id="howto">
     <summary>How to use this tracker</summary>
-    <p>The card above says whether the ground stop is still in effect and when the feed was last checked. <strong>Timeline</strong> lists every update in time order with the newest at the top; tap Official, News or Social to see one kind of source. <strong>Trending</strong> ranks what people are talking about, and the cards move as attention shifts. A fresh pass over news and social sources runs about every 5 minutes and new entries appear on their own, so there is no need to reload. Tap any entry to open its source. Anything marked Unverified has not been confirmed by an official source. <a href="https://github.com/HubCatz202/faa-ground-stop-watch#readme" target="_blank" rel="noopener">How it works, in the README</a></p>
+    <p>The card above says whether the ground stop is still in effect and when the feed was last checked. <strong>Timeline</strong> lists every update in time order with the newest at the top; tap Official, News or Social to see one kind of source. <strong>Trending</strong> ranks what people are talking about; tap a card to compare what officials, news outlets and social posts are each saying on that topic. A fresh pass over news and social sources runs about every 5 minutes and new entries appear on their own, so there is no need to reload. Tap any entry to open its source. Anything marked Unverified has not been confirmed by an official source. <a href="https://github.com/HubCatz202/faa-ground-stop-watch#readme" target="_blank" rel="noopener">How it works, in the README</a></p>
   </details>
 
   <div class="tabs" role="tablist" aria-label="Views">
@@ -334,7 +358,7 @@ footer { font-size: 13px; color: var(--muted); border-top: .5px solid var(--hair
   </div>
 
   <div class="view" id="view-trending" role="tabpanel" aria-labelledby="tab-trending" hidden>
-    <p class="tr-note">What people are talking about right now, ranked by how widely each topic shows up across the news and social sources checked on the latest refresh. Cards move up and down as that changes. This is an estimate from search coverage, not a platform trend feed.</p>
+    <p class="tr-note">What people are talking about right now, ranked by how widely each topic shows up across the news and social sources checked on the latest refresh. Cards move up and down as that changes. Tap a card to compare what officials, news coverage and social posts say about it. This is an estimate from search coverage, not a platform trend feed.</p>
     <div class="note" id="tr-empty">No trending topics yet.</div>
     <ol class="topics" id="topics" aria-label="Trending topics, most widespread first"></ol>
   </div>
@@ -372,6 +396,7 @@ window.GSW_FEEDBACK_URL = "https://github.com/HubCatz202/faa-ground-stop-watch/i
   var dbRef = null;
   var topics = [];
   var linkMap = {};
+  var openTopics = {};
   var view = location.hash === "#trending" ? "trending" : "timeline";
   var reduceMotion = false;
   try { reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
@@ -535,6 +560,7 @@ window.GSW_FEEDBACK_URL = "https://github.com/HubCatz202/faa-ground-stop-watch/i
       score: Math.max(0, Math.min(100, Number(x.score) || 0)),
       prev: (prev === undefined || prev === null || isNaN(Number(prev))) ? null : Number(prev),
       platforms: Array.isArray(x.platforms) ? x.platforms.map(String) : [],
+      items: Array.isArray(x.items) ? x.items.map(String) : [],
       updated: parse(x.updatedAt)
     };
   }
@@ -556,6 +582,39 @@ window.GSW_FEEDBACK_URL = "https://github.com/HubCatz202/faa-ground-stop-watch/i
     body.appendChild(heat);
     body.appendChild(node("p", "", t.summary));
     if (t.platforms.length) body.appendChild(node("div", "plats", "Seen on: " + t.platforms.join(", ")));
+    var byId = {}; items.forEach(function (it) { byId[it.id] = it; });
+    var rel = t.items.map(function (id) { return byId[id]; }).filter(Boolean);
+    var open = !!openTopics[t.id];
+    li.classList.toggle("open", open);
+    var more = node("button", "t-more", (open ? "Hide" : "Compare") + " what sources are saying (" + rel.length + ")");
+    more.type = "button"; more.setAttribute("aria-expanded", String(open));
+    body.appendChild(more);
+    if (open) {
+      var voices = node("div", "voices");
+      [["official", "Officials"], ["news", "News coverage"], ["social", "Social and first-hand"]].forEach(function (pair) {
+        var grp = node("div", "v-" + pair[0]);
+        grp.appendChild(node("h4", "", pair[1]));
+        var list = rel.filter(function (it) { return it.kind === pair[0]; });
+        if (!list.length) { grp.appendChild(node("div", "v-none", "Nothing logged from this side yet.")); }
+        else {
+          var ul = node("ul");
+          list.forEach(function (it) {
+            var row = node("li");
+            var href = it.url || linkMap[it.id] || "";
+            var ttl = node(href ? "a" : "span", "", it.title);
+            if (href) { ttl.href = href; ttl.target = "_blank"; ttl.rel = "noopener"; }
+            row.appendChild(ttl);
+            var src = node("span", "v-src", it.source);
+            if (it.confidence === "unverified") { src.appendChild(document.createTextNode("  ")); src.appendChild(node("span", "v-flag", "\u25B3 Unverified")); }
+            row.appendChild(src);
+            ul.appendChild(row);
+          });
+          grp.appendChild(ul);
+        }
+        voices.appendChild(grp);
+      });
+      body.appendChild(voices);
+    }
     li.appendChild(body);
   }
   function renderTopics() {
@@ -569,6 +628,12 @@ window.GSW_FEEDBACK_URL = "https://github.com/HubCatz202/faa-ground-stop-watch/i
     var keep = {};
     shown.forEach(function (t, idx) {
       var rec = old[t.id], li = rec ? rec.el : node("li", "topic enter");
+      if (!rec) li.addEventListener("click", function (e) {
+        if (e.target.closest && (e.target.closest("a") || e.target.closest(".voices"))) return;
+        var id = li.getAttribute("data-id");
+        openTopics[id] = !openTopics[id];
+        renderTopics();
+      });
       if (rec) li.classList.remove("enter");
       li.setAttribute("data-id", t.id);
       fillTopic(li, t, idx);
@@ -719,6 +784,7 @@ window.GSW_FEEDBACK_URL = "https://github.com/HubCatz202/faa-ground-stop-watch/i
       seen = ids;
       renderFresh();
       render(fresh);
+      renderTopics();
     }, fail);
   }
 
