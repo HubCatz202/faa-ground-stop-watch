@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FAA Ground Stop Watch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: one scrolling timeline. A vertical rail runs down the left; each
+   numbered event is a node on the rail with a sticky header, and its entries
+   hang off the rail in time order. Status strip sits above the rail. */
+:root {
+  --paper: #f3f5f7;
+  --panel: #ffffff;
+  --ink: #101a26;
+  --muted: #586779;
+  --rule: #d5dbe2;
+  --accent: #0b4f9e;
+  --crit: #b3261e;
+  --crit-bg: #fbe9e7;
+  --warn: #8a5a00;
+  --warn-bg: #fdf1d3;
+  --ok: #1d6b3a;
+  --ok-bg: #e2f3e7;
+  --flash: #fff6cf;
+  --display: "IBM Plex Sans Condensed", "Arial Narrow", Arial, sans-serif;
+  --body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --paper: #0c1219; --panel: #141d28; --ink: #e6ecf2; --muted: #93a1b2; --rule: #263444;
+    --accent: #7db4f5; --crit: #ff8a80; --crit-bg: #3a1614; --warn: #f2c35b; --warn-bg: #33270c;
+    --ok: #7fd49b; --ok-bg: #11301c; --flash: #3a3312;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #0c1219; --panel: #141d28; --ink: #e6ecf2; --muted: #93a1b2; --rule: #263444;
+  --accent: #7db4f5; --crit: #ff8a80; --crit-bg: #3a1614; --warn: #f2c35b; --warn-bg: #33270c;
+  --ok: #7fd49b; --ok-bg: #11301c; --flash: #3a3312;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.5; -webkit-text-size-adjust: 100%; }
+.wrap { max-width: 680px; margin: 0 auto; padding: 16px 16px 56px; display: flex; flex-direction: column; gap: 14px; }
+
+header.top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+h1 { font-family: var(--display); font-weight: 700; font-size: 22px; letter-spacing: .01em; margin: 0; }
+.clock { font-family: var(--mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+.status { background: var(--panel); border: 1px solid var(--rule); border-left: 6px solid var(--muted); border-radius: 6px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; }
+.status[data-state="active"]  { border-left-color: var(--crit); }
+.status[data-state="lifting"] { border-left-color: var(--warn); }
+.status[data-state="lifted"]  { border-left-color: var(--ok); }
+.pill { align-self: flex-start; font-family: var(--mono); font-weight: 600; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; background: var(--rule); color: var(--ink); }
+.status[data-state="active"]  .pill { background: var(--crit-bg); color: var(--crit); }
+.status[data-state="lifting"] .pill { background: var(--warn-bg); color: var(--warn); }
+.status[data-state="lifted"]  .pill { background: var(--ok-bg);  color: var(--ok); }
+.status h2 { font-family: var(--display); font-weight: 700; font-size: 24px; line-height: 1.2; margin: 0; text-wrap: balance; }
+.status p { margin: 0; }
+.fresh { font-family: var(--mono); font-size: 12px; color: var(--muted); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex: none; }
+.dot.live { background: var(--ok); animation: pulse 2s infinite; }
+.dot.stale { background: var(--warn); }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { .dot.live { animation: none; } }
+
+.controls { display: flex; flex-direction: column; gap: 10px; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.chip { font-family: var(--body); font-size: 14px; font-weight: 500; padding: 7px 13px; border-radius: 999px; border: 1px solid var(--rule); background: var(--panel); color: var(--ink); cursor: pointer; white-space: nowrap; }
+.chip .n { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-left: 4px; font-variant-numeric: tabular-nums; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--panel); }
+.chip[aria-pressed="true"] .n { color: var(--panel); opacity: .8; }
+.chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.jump { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; -webkit-overflow-scrolling: touch; }
+.jump .chip { font-size: 13px; padding: 5px 11px; flex: none; }
+.jump .chip b { font-family: var(--mono); font-weight: 600; color: var(--accent); margin-right: 6px; }
+.jump .chip[aria-pressed="true"] b { color: var(--panel); }
+.label { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+
+/* Timeline */
+.timeline { display: flex; flex-direction: column; }
+.event { position: relative; padding-left: 28px; padding-bottom: 18px; }
+.event::before { content: ""; position: absolute; left: 11px; top: 0; bottom: 0; width: 2px; background: var(--rule); }
+.event:first-child::before { top: 14px; }
+.event:last-child::before { bottom: auto; height: 100%; }
+.ev-head { position: sticky; top: 0; z-index: 2; background: var(--paper); padding: 8px 0 8px; margin-bottom: 4px; }
+.ev-num { position: absolute; left: -28px; top: 8px; width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: var(--panel); font-family: var(--mono); font-weight: 600; font-size: 12px; display: flex; align-items: center; justify-content: center; }
+.ev-head h3 { font-family: var(--display); font-weight: 700; font-size: 19px; line-height: 1.25; margin: 0; text-wrap: balance; }
+.ev-range { font-family: var(--mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.entries { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.entry { position: relative; display: flex; flex-direction: column; gap: 4px; }
+.entry::before { content: ""; position: absolute; left: -21px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--paper); border: 2px solid var(--muted); }
+.entry.official::before { border-color: var(--accent); }
+.entry.social::before { border-color: var(--warn); }
+.when { font-family: var(--mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; display: flex; gap: 8px; flex-wrap: wrap; }
+.when strong { color: var(--ink); font-weight: 600; }
+.card { background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 11px 13px; display: flex; flex-direction: column; gap: 6px; transition: background-color 4s ease-out; }
+.entry.new .card { background: var(--flash); transition: none; }
+.meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.kind { font-weight: 600; letter-spacing: .05em; text-transform: uppercase; padding: 1px 7px; border-radius: 3px; border: 1px solid currentColor; }
+.kind.official { color: var(--accent); }
+.kind.news { color: var(--ink); }
+.kind.social { color: var(--warn); }
+.conf { margin-left: auto; font-size: 12px; }
+.conf.unverified { color: var(--warn); font-weight: 600; }
+.card h4 { font-family: var(--body); font-weight: 600; font-size: 16px; line-height: 1.3; margin: 0; }
+.card p { margin: 0; font-size: 15px; }
+.src { font-size: 13px; color: var(--muted); }
+.echo { font-family: var(--mono); font-size: 12px; color: var(--muted); border-top: 1px solid var(--rule); padding-top: 6px; }
+[hidden] { display: none !important; }
+.fb { background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; }
+.fb form { display: flex; flex-direction: column; gap: 10px; }
+.fb h2 { font-family: var(--display); font-weight: 700; font-size: 19px; margin: 0; }
+.fb fieldset { border: 0; margin: 0; padding: 0; display: flex; gap: 6px 16px; flex-wrap: wrap; align-items: center; }
+.fb legend { padding: 0; margin-bottom: 4px; }
+.fb textarea, .fb input[type="text"] { width: 100%; font: inherit; color: var(--ink); background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 9px 11px; }
+.fb textarea:focus-visible, .fb input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.fb-msg { margin: 0; font-size: 14px; color: var(--muted); min-height: 1.4em; }
+.chip.primary { background: var(--accent); border-color: var(--accent); color: var(--panel); }
+.chip:disabled { opacity: .5; cursor: default; }
+.sig { margin: 8px 0 0; }
+.sig a, footer a { color: var(--accent); }
+.tabs { display: flex; gap: 20px; border-bottom: 1px solid var(--rule); }
+.tab { font-family: var(--display); font-weight: 700; font-size: 19px; color: var(--muted); background: none; border: 0; border-bottom: 3px solid transparent; padding: 6px 2px 8px; margin-bottom: -1px; cursor: pointer; }
+.tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+.tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.tab .n { font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--muted); margin-left: 6px; }
+.view { display: flex; flex-direction: column; gap: 14px; }
+.tr-note { margin: 0; font-size: 14px; color: var(--muted); }
+.topics { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.topic { display: flex; gap: 12px; background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 14px; will-change: transform; }
+.topic.enter { animation: topic-in .5s ease-out; }
+@keyframes topic-in { from { background: var(--flash); } to { background: var(--panel); } }
+.rank { font-family: var(--display); font-weight: 700; font-size: 28px; line-height: 1; color: var(--accent); min-width: 28px; font-variant-numeric: tabular-nums; }
+.t-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.t-head { display: flex; gap: 6px 10px; flex-wrap: wrap; align-items: baseline; justify-content: space-between; }
+.t-head h3 { font-family: var(--body); font-weight: 600; font-size: 16px; line-height: 1.3; margin: 0; }
+.trend { font-family: var(--mono); font-size: 12px; font-weight: 600; padding: 1px 8px; border-radius: 999px; background: var(--rule); color: var(--ink); white-space: nowrap; }
+.trend.up { background: var(--crit-bg); color: var(--crit); }
+.trend.down { background: var(--paper); color: var(--muted); }
+.trend.fresh { background: var(--warn-bg); color: var(--warn); }
+.heat { height: 6px; border-radius: 3px; background: var(--rule); overflow: hidden; }
+.heat i { display: block; height: 100%; background: var(--accent); border-radius: 3px; transition: width .6s ease; }
+.topic p { margin: 0; font-size: 15px; }
+.plats { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { .topic.enter { animation: none; } .heat i { transition: none; } }
+.note { background: var(--panel); border: 1px dashed var(--rule); border-radius: 6px; padding: 14px 16px; color: var(--muted); font-size: 15px; }
+footer { font-size: 13px; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>FAA Ground Stop Watch</h1>
+    <div class="clock" id="clock"></div>
+  </header>
+
+  <div class="row">
+    <button class="chip" id="fb-open" type="button" aria-expanded="false" aria-controls="fb-panel">Report a bug or request a feature</button>
+  </div>
+  <section class="fb" id="fb-panel" hidden>
+    <form id="fb-form">
+      <h2>Report a bug or request a feature</h2>
+      <fieldset>
+        <legend class="label">Type</legend>
+        <label for="fb-type-bug"><input type="radio" name="fbtype" id="fb-type-bug" value="bug" checked> Bug</label>
+        <label for="fb-type-feature"><input type="radio" name="fbtype" id="fb-type-feature" value="feature"> Feature request</label>
+      </fieldset>
+      <label class="label" for="fb-text">What went wrong, or what do you want added?</label>
+      <textarea id="fb-text" rows="5" maxlength="1000" required></textarea>
+      <label class="label" for="fb-contact">How to reach you (optional)</label>
+      <input id="fb-contact" type="text" maxlength="120" autocomplete="off">
+      <p class="fb-msg" id="fb-msg" role="status"></p>
+      <div class="row">
+        <button class="chip primary" id="fb-send" type="submit">Send report</button>
+        <button class="chip" id="fb-close" type="button">Close</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="status" id="status" data-state="unknown" aria-live="polite">
+    <span class="pill" id="pill">Loading</span>
+    <h2 id="headline">Loading current status</h2>
+    <p id="detail"></p>
+    <div class="fresh"><span class="dot" id="dot"></span><span id="fresh">Connecting to the feed</span></div>
+  </section>
+
+  <div class="tabs" role="tablist" aria-label="Views">
+    <button class="tab" id="tab-timeline" type="button" role="tab" aria-selected="true" aria-controls="view-timeline">Timeline</button>
+    <button class="tab" id="tab-trending" type="button" role="tab" aria-selected="false" aria-controls="view-trending">Trending<span class="n" id="n-topics">0</span></button>
+  </div>
+
+  <div class="view" id="view-timeline" role="tabpanel" aria-labelledby="tab-timeline">
+  <div class="controls">
+    <div class="row" role="group" aria-label="Timeline order">
+      <button class="chip" id="o-desc" data-order="desc" aria-pressed="true">Newest first</button>
+      <button class="chip" id="o-asc" data-order="asc" aria-pressed="false">Oldest first</button>
+    </div>
+    <div class="row" id="filters" role="group" aria-label="Filter entries by type">
+      <button class="chip" id="f-all" data-kind="all" aria-pressed="true">All<span class="n" id="n-all">0</span></button>
+      <button class="chip" id="f-official" data-kind="official" aria-pressed="false">Official<span class="n" id="n-official">0</span></button>
+      <button class="chip" id="f-news" data-kind="news" aria-pressed="false">News<span class="n" id="n-news">0</span></button>
+      <button class="chip" id="f-social" data-kind="social" aria-pressed="false">Social<span class="n" id="n-social">0</span></button>
+    </div>
+    <div>
+      <div class="label">Events</div>
+      <div class="jump" id="jump" role="group" aria-label="Show one event"></div>
+    </div>
+  </div>
+
+  <div class="note" id="note">Loading the timeline.</div>
+  <div class="timeline" id="timeline" aria-label="Timeline of events"></div>
+  </div>
+
+  <div class="view" id="view-trending" role="tabpanel" aria-labelledby="tab-trending" hidden>
+    <p class="tr-note">What people are talking about right now, ranked by how widely each topic shows up across the news and social sources checked on the latest refresh. Cards move up and down as that changes. This is an estimate from search coverage, not a platform trend feed.</p>
+    <div class="note" id="tr-empty">No trending topics yet.</div>
+    <ol class="topics" id="topics" aria-label="Trending topics, most widespread first"></ol>
+  </div>
+
+  <footer>
+    <p style="margin:0">Summaries are written by Claude from public reporting and public posts. Entries marked Unverified have no official confirmation yet. A post that repeats something already logged is folded into that entry. New entries appear on their own; there is no need to reload.</p>
+    <p class="sig">Made by <a href="https://github.com/HubCatz202" target="_blank" rel="noopener">HubCatz202</a> and Claude Fable 5.2.</p>
+  </footer>
+</div>
+
+<script>
+/* Hosted build: read the data file straight from the repo so new entries show within about a minute of each refresh. */
+window.GSW_DATA = [
+  "https://api.github.com/repos/HubCatz202/faa-ground-stop-watch/contents/data.json?ref=data",
+  "https://raw.githubusercontent.com/HubCatz202/faa-ground-stop-watch/data/data.json",
+  "data.json"
+];
+window.GSW_FEEDBACK_URL = "https://github.com/HubCatz202/faa-ground-stop-watch/issues/new/choose";
+</script>
+<script>
+(function () {
+  var STALE_MS = 12 * 60 * 1000;
+  var PILL = { active: "In effect", lifting: "Lifting", lifted: "Lifted", unknown: "Unknown" };
+  var KIND = { official: "Official", news: "News", social: "Social" };
+  var CONF = { confirmed: "Confirmed", reported: "Reported", unverified: "Unverified" };
+
+  var el = function (id) { return document.getElementById(id); };
+  var items = [];
+  var seen = null;
+  var filter = "all";
+  var order = "desc";
+  var eventFilter = "";
+  var statusUpdatedAt = null;
+  var feedState = "loading";
+  var dbRef = null;
+  var topics = [];
+  var view = location.hash === "#trending" ? "trending" : "timeline";
+  var reduceMotion = false;
+  try { reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
+
+  try {
+    var sf = localStorage.getItem("gsw-filter"); if (sf && (sf === "all" || KIND[sf])) filter = sf;
+    var so = localStorage.getItem("gsw-order"); if (so === "asc" || so === "desc") order = so;
+  } catch (e) {}
+
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+  function zulu(d) { return pad(d.getUTCHours()) + pad(d.getUTCMinutes()) + "Z"; }
+  function local(d) { return d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }); }
+  function ago(d) {
+    var m = Math.round((Date.now() - d.getTime()) / 60000);
+    if (m < 1) return "just now";
+    if (m < 60) return m + " min ago";
+    var h = Math.floor(m / 60), r = m % 60;
+    if (h < 24) return h + " h " + (r ? r + " min " : "") + "ago";
+    return Math.floor(h / 24) + " d ago";
+  }
+  function parse(ts) { var d = new Date(ts); return isNaN(d.getTime()) ? null : d; }
+  function time(it) { return it.date ? it.date.getTime() : 0; }
+  function node(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text !== undefined) n.textContent = text; return n; }
+
+  function tick() {
+    var now = new Date();
+    el("clock").textContent = local(now) + " local · " + zulu(now);
+    renderFresh();
+    var stamps = document.querySelectorAll("[data-ts]");
+    for (var i = 0; i < stamps.length; i++) {
+      var d = parse(stamps[i].getAttribute("data-ts"));
+      if (d) stamps[i].textContent = ago(d);
+    }
+  }
+
+  function renderFresh() {
+    var dot = el("dot"), fresh = el("fresh");
+    if (feedState === "unavailable") { dot.className = "dot stale"; fresh.textContent = "Live feed unavailable in this view. Open the page signed in to Claude."; return; }
+    if (feedState === "slow") { dot.className = "dot stale"; fresh.textContent = "The feed has not answered yet. Anything shown may be out of date."; return; }
+    if (feedState === "loading") { dot.className = "dot"; fresh.textContent = "Connecting to the feed"; return; }
+    var d = statusUpdatedAt;
+    if (!d) { dot.className = "dot"; fresh.textContent = "Connected. Waiting for the first check."; return; }
+    var stale = Date.now() - d.getTime() > STALE_MS;
+    dot.className = "dot " + (stale ? "stale" : "live");
+    fresh.textContent = "Last checked " + ago(d) + " (" + local(d) + ", " + zulu(d) + ")" + (stale ? ". Overdue for a refresh." : "");
+  }
+
+  function renderStatus(data) {
+    var s = el("status");
+    if (!data) {
+      s.setAttribute("data-state", "unknown");
+      el("pill").textContent = "No status yet";
+      el("headline").textContent = "No status has been posted";
+      el("detail").textContent = "";
+      statusUpdatedAt = null;
+    } else {
+      var state = PILL[data.state] ? data.state : "unknown";
+      s.setAttribute("data-state", state);
+      el("pill").textContent = PILL[state];
+      el("headline").textContent = String(data.headline || "");
+      el("detail").textContent = String(data.detail || "");
+      statusUpdatedAt = parse(data.updatedAt);
+    }
+    renderFresh();
+  }
+
+  function render(fresh) {
+    var counts = { all: items.length, official: 0, news: 0, social: 0 };
+    items.forEach(function (it) { if (counts[it.kind] !== undefined) counts[it.kind]++; });
+    ["all", "official", "news", "social"].forEach(function (k) {
+      el("n-" + k).textContent = counts[k];
+      el("f-" + k).setAttribute("aria-pressed", String(filter === k));
+    });
+    el("o-desc").setAttribute("aria-pressed", String(order === "desc"));
+    el("o-asc").setAttribute("aria-pressed", String(order === "asc"));
+
+    var tl = el("timeline"), note = el("note"), jump = el("jump");
+    var keepScroll = jump.scrollLeft;
+    tl.textContent = ""; jump.textContent = "";
+    var shown = items.filter(function (it) { return filter === "all" || it.kind === filter; });
+    if (!shown.length) {
+      note.hidden = false;
+      note.textContent = feedState === "loading" ? "Loading the timeline."
+        : feedState === "unavailable" ? "The timeline could not be loaded in this view."
+        : items.length ? "Nothing of this type yet." : "No updates have been logged yet.";
+      return;
+    }
+    note.hidden = true;
+
+    var sign = order === "asc" ? 1 : -1;
+    var groups = {}, keys = [];
+    shown.forEach(function (it) {
+      var k = it.event || "Other developments";
+      if (!groups[k]) { groups[k] = { key: k, items: [], first: Infinity, last: -Infinity }; keys.push(k); }
+      var g = groups[k]; g.items.push(it);
+      var t = time(it); if (t < g.first) g.first = t; if (t > g.last) g.last = t;
+    });
+    var list = keys.map(function (k) { return groups[k]; });
+    list.sort(function (a, b) { return order === "asc" ? a.first - b.first : b.last - a.last; });
+
+    if (eventFilter && !groups[eventFilter]) eventFilter = "";
+    var allBtn = node("button", "chip", "All events"); allBtn.type = "button";
+    allBtn.setAttribute("aria-pressed", String(!eventFilter));
+    allBtn.addEventListener("click", function () { eventFilter = ""; render(null); });
+    jump.appendChild(allBtn);
+
+    list.forEach(function (g, i) {
+      g.items.sort(function (a, b) { return sign * (time(a) - time(b)); });
+      var m = /^(\d+)\.\s*(.*)$/.exec(g.key);
+      var num = m ? m[1] : "•", name = m ? m[2] : g.key;
+      var id = "ev-" + i;
+
+      var jb = node("button", "chip"); jb.type = "button";
+      jb.appendChild(node("b", "", num)); jb.appendChild(document.createTextNode(name));
+      jb.setAttribute("aria-pressed", String(eventFilter === g.key));
+      jb.appendChild(node("span", "n", String(g.items.length)));
+      jb.addEventListener("click", function () { eventFilter = eventFilter === g.key ? "" : g.key; render(null); });
+      jump.appendChild(jb);
+      if (eventFilter && eventFilter !== g.key) return;
+
+      var sec = node("section", "event"); sec.id = id;
+      var head = node("div", "ev-head");
+      head.appendChild(node("span", "ev-num", num));
+      head.appendChild(node("h3", "", name));
+      var a = new Date(g.first), b = new Date(g.last);
+      head.appendChild(node("div", "ev-range", local(a) + (g.last !== g.first ? " to " + local(b) : "") + " · " + g.items.length + (g.items.length === 1 ? " entry" : " entries")));
+      sec.appendChild(head);
+
+      var ol = node("ol", "entries");
+      g.items.forEach(function (it) {
+        var isNew = fresh && fresh[it.id];
+        var li = node("li", "entry " + it.kind + (isNew ? " new" : ""));
+        var when = node("div", "when");
+        if (it.date) {
+          when.appendChild(node("strong", "", local(it.date)));
+          when.appendChild(node("span", "", zulu(it.date)));
+          var rel = node("span", "", ago(it.date)); rel.setAttribute("data-ts", it.date.toISOString()); when.appendChild(rel);
+        }
+        li.appendChild(when);
+        var card = node("div", "card");
+        var meta = node("div", "meta");
+        meta.appendChild(node("span", "kind " + it.kind, (KIND[it.kind] || "Update") + (it.platform ? " · " + it.platform : "")));
+        if (CONF[it.confidence]) meta.appendChild(node("span", "conf " + it.confidence, CONF[it.confidence]));
+        card.appendChild(meta);
+        card.appendChild(node("h4", "", it.title));
+        card.appendChild(node("p", "", it.summary));
+        if (it.source) card.appendChild(node("div", "src", it.source));
+        if (it.echoes.length) card.appendChild(node("div", "echo", "Same content also on: " + it.echoes.join(", ")));
+        li.appendChild(card);
+        ol.appendChild(li);
+        if (isNew) requestAnimationFrame(function () { requestAnimationFrame(function () { li.classList.remove("new"); }); });
+      });
+      sec.appendChild(ol);
+      tl.appendChild(sec);
+    });
+    jump.scrollLeft = keepScroll;
+  }
+
+  ["all", "official", "news", "social"].forEach(function (k) {
+    el("f-" + k).addEventListener("click", function () {
+      filter = k;
+      try { localStorage.setItem("gsw-filter", filter); } catch (err) {}
+      render(null);
+    });
+  });
+  ["desc", "asc"].forEach(function (o) {
+    el("o-" + o).addEventListener("click", function () {
+      order = o;
+      try { localStorage.setItem("gsw-order", order); } catch (err) {}
+      render(null);
+    });
+  });
+
+  function setView(v, push) {
+    view = v === "trending" ? "trending" : "timeline";
+    el("view-timeline").hidden = view !== "timeline";
+    el("view-trending").hidden = view !== "trending";
+    el("tab-timeline").setAttribute("aria-selected", String(view === "timeline"));
+    el("tab-trending").setAttribute("aria-selected", String(view === "trending"));
+    if (push) { try { history.replaceState(null, "", "#" + view); } catch (e) {} }
+  }
+  el("tab-timeline").addEventListener("click", function () { setView("timeline", true); });
+  el("tab-trending").addEventListener("click", function () { setView("trending", true); });
+  window.addEventListener("hashchange", function () { setView(location.hash === "#trending" ? "trending" : "timeline", false); });
+
+  function normTopic(id, x) {
+    x = x || {};
+    var prev = x.prevScore;
+    return {
+      id: id,
+      label: String(x.label || ""),
+      summary: String(x.summary || ""),
+      score: Math.max(0, Math.min(100, Number(x.score) || 0)),
+      prev: (prev === undefined || prev === null || isNaN(Number(prev))) ? null : Number(prev),
+      platforms: Array.isArray(x.platforms) ? x.platforms.map(String) : [],
+      updated: parse(x.updatedAt)
+    };
+  }
+  function fillTopic(li, t, i) {
+    li.textContent = "";
+    li.appendChild(node("div", "rank", String(i + 1)));
+    var body = node("div", "t-body");
+    var head = node("div", "t-head");
+    head.appendChild(node("h3", "", t.label));
+    var d = t.prev === null ? null : Math.round(t.score - t.prev);
+    var cls = "trend", txt = "Steady";
+    if (d === null) { cls += " fresh"; txt = "New"; }
+    else if (d >= 5) { cls += " up"; txt = "\u25B2 Rising +" + d; }
+    else if (d <= -5) { cls += " down"; txt = "\u25BC Cooling " + d; }
+    head.appendChild(node("span", cls, txt));
+    body.appendChild(head);
+    var heat = node("div", "heat"); var bar = node("i"); bar.style.width = t.score + "%"; heat.appendChild(bar);
+    heat.setAttribute("role", "img"); heat.setAttribute("aria-label", "Spread " + Math.round(t.score) + " out of 100");
+    body.appendChild(heat);
+    body.appendChild(node("p", "", t.summary));
+    if (t.platforms.length) body.appendChild(node("div", "plats", "Seen on: " + t.platforms.join(", ")));
+    li.appendChild(body);
+  }
+  function renderTopics() {
+    var list = el("topics");
+    var shown = topics.filter(function (t) { return t.score > 0 && t.label; })
+      .sort(function (a, b) { return b.score - a.score || (a.label < b.label ? -1 : 1); }).slice(0, 12);
+    el("n-topics").textContent = shown.length;
+    el("tr-empty").hidden = shown.length > 0;
+    var old = {}, kids = list.children, i;
+    for (i = 0; i < kids.length; i++) old[kids[i].getAttribute("data-id")] = { el: kids[i], top: kids[i].getBoundingClientRect().top };
+    var keep = {};
+    shown.forEach(function (t, idx) {
+      var rec = old[t.id], li = rec ? rec.el : node("li", "topic enter");
+      if (rec) li.classList.remove("enter");
+      li.setAttribute("data-id", t.id);
+      fillTopic(li, t, idx);
+      list.appendChild(li);
+      keep[t.id] = true;
+    });
+    Object.keys(old).forEach(function (id) { if (!keep[id] && old[id].el.parentNode === list) list.removeChild(old[id].el); });
+    if (reduceMotion || view !== "trending") return;
+    shown.forEach(function (t) {
+      var rec = old[t.id]; if (!rec) return;
+      var li = rec.el, dy = rec.top - li.getBoundingClientRect().top;
+      if (!dy) return;
+      li.style.transition = "none"; li.style.transform = "translateY(" + dy + "px)";
+      requestAnimationFrame(function () { requestAnimationFrame(function () { li.style.transition = "transform .7s cubic-bezier(.2,.7,.2,1)"; li.style.transform = ""; }); });
+    });
+  }
+
+  function fbToggle(open) {
+    el("fb-panel").hidden = !open;
+    el("fb-open").setAttribute("aria-expanded", String(open));
+    if (open) { el("fb-msg").textContent = ""; try { el("fb-text").focus(); } catch (e) {} }
+  }
+  el("fb-open").addEventListener("click", function () { fbToggle(el("fb-panel").hidden); });
+  el("fb-close").addEventListener("click", function () { fbToggle(false); });
+  el("fb-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var msg = el("fb-msg"), send = el("fb-send");
+    var text = el("fb-text").value.trim();
+    if (!text) { msg.textContent = "Describe the bug or the feature first."; return; }
+    if (!dbRef) { msg.textContent = "Reports cannot be sent from this view. Open the page signed in to Claude and try again."; return; }
+    send.disabled = true; msg.textContent = "Sending";
+    var doc = {
+      type: el("fb-type-feature").checked ? "feature" : "bug",
+      message: text.slice(0, 1000),
+      contact: el("fb-contact").value.trim().slice(0, 120),
+      createdAt: new Date().toISOString(),
+      status: "new"
+    };
+    dbRef.collection("feedback").add(doc).then(function () {
+      el("fb-text").value = ""; el("fb-contact").value = "";
+      msg.textContent = "Sent. Reports are reviewed on the next refresh cycle.";
+    }, function () {
+      msg.textContent = "This report could not be saved. Your access to this page may be view-only.";
+    }).then(function () { send.disabled = false; });
+  });
+
+  tick();
+  setInterval(tick, 30000);
+  setView(view, false);
+  render(null);
+  renderTopics();
+
+  function norm(id, x) {
+    x = x || {};
+    return {
+      id: id,
+      date: parse(x.ts),
+      kind: KIND[x.kind] ? x.kind : "news",
+      confidence: String(x.confidence || ""),
+      source: String(x.source || ""),
+      platform: String(x.platform || ""),
+      event: String(x.event || ""),
+      echoes: Array.isArray(x.echoes) ? x.echoes.map(String) : [],
+      title: String(x.title || ""),
+      summary: String(x.summary || "")
+    };
+  }
+
+  /* Signed-out visitors cannot read the live database, so the page falls back
+     to data.json, a snapshot published alongside the page on every refresh. */
+  var snapTimer = null;
+  function loadSnapshot() {
+    function get(url) {
+      var opt = { cache: "no-store" };
+      if (url.indexOf("https://api.github.com/") === 0) opt.headers = { Accept: "application/vnd.github.raw+json" };
+      return fetch(url, opt).then(function (r) { if (!r.ok) throw new Error("http"); return r.json(); });
+    }
+    /* A hosted copy lists its data sources in window.GSW_DATA, freshest first. */
+    var urls = Array.isArray(window.GSW_DATA) && window.GSW_DATA.length ? window.GSW_DATA.slice() : ["data.json?t=" + Date.now(), "data.json"];
+    var chain = get(urls[0]);
+    urls.slice(1).forEach(function (u) { chain = chain.catch(function () { return get(u); }); });
+    chain.then(function (j) {
+      var next = [], fresh = {}, ids = {};
+      (Array.isArray(j.items) ? j.items : []).forEach(function (x) {
+        var id = String((x && x.id) || "");
+        if (!id) return;
+        ids[id] = true;
+        if (seen && !seen[id]) fresh[id] = true;
+        next.push(norm(id, x));
+      });
+      items = next; seen = ids; feedState = "ready";
+      topics = (Array.isArray(j.topics) ? j.topics : []).map(function (x) { return normTopic(String((x && x.id) || ""), x); });
+      renderStatus(j.status || null);
+      render(fresh);
+      renderTopics();
+    }, function () {
+      if (!items.length) { feedState = "unavailable"; renderFresh(); render(null); }
+    });
+  }
+  function useSnapshot() {
+    if (snapTimer) return;
+    el("fb-panel").hidden = true;
+    if (typeof window.GSW_FEEDBACK_URL === "string" && /^https:\/\/github\.com\//.test(window.GSW_FEEDBACK_URL)) {
+      var a = document.createElement("a");
+      a.className = "chip"; a.href = window.GSW_FEEDBACK_URL; a.target = "_blank"; a.rel = "noopener";
+      a.textContent = "Report a bug or request a feature"; a.style.textDecoration = "none";
+      el("fb-open").parentNode.replaceChild(a, el("fb-open"));
+    } else { el("fb-open").hidden = true; }
+    loadSnapshot();
+    snapTimer = setInterval(loadSnapshot, 75000);
+  }
+
+  function start(db) {
+    dbRef = db || null;
+    if (!db) { useSnapshot(); return; }
+    var slow = setTimeout(function () { if (feedState === "loading") { feedState = "slow"; renderFresh(); } }, 10000);
+    function ok(meta) { if (!meta || !meta.fromCache) clearTimeout(slow); feedState = "ready"; }
+    function fail() { clearTimeout(slow); useSnapshot(); }
+
+    db.doc("meta/status").onSnapshot(function (snap) {
+      ok(snap.metadata);
+      renderStatus(snap.exists ? snap.data() : null);
+    }, fail);
+
+    db.collection("topics").limit(60).onSnapshot(function (snap) {
+      topics = snap.docs.map(function (d) { return normTopic(d.id, d.data()); });
+      renderTopics();
+    }, function () {});
+
+    db.collection("items").orderBy("ts", "desc").limit(300).onSnapshot(function (snap) {
+      ok(snap.metadata);
+      var next = [], fresh = {}, ids = {};
+      snap.docs.forEach(function (d) {
+        var x = d.data() || {};
+        ids[d.id] = true;
+        if (seen && !seen[d.id]) fresh[d.id] = true;
+        next.push(norm(d.id, x));
+      });
+      items = next;
+      seen = ids;
+      renderFresh();
+      render(fresh);
+    }, fail);
+  }
+
+  function boot() {
+    if (!window.claude || typeof window.claude.use !== "function") { start(null); return; }
+    window.claude.use("db").then(start, function () { start(null); });
+  }
+  if (window.claude) boot(); else window.addEventListener("load", function () { setTimeout(boot, 0); });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+name: Bug report
+description: Something on the tracker is broken or wrong
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What went wrong?
+    validations:
+      required: true

@@ -1,0 +1,10 @@
+name: Feature request
+description: Something you want added to the tracker
+labels: [feature]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What do you want added?
+    validations:
+      required: true
