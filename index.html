@@ -351,7 +351,7 @@ footer { font-size: 13px; color: var(--muted); border-top: .5px solid var(--hair
   <section class="ask" id="ask" aria-label="Ask about the ground stop">
     <form id="ask-form" autocomplete="off">
       <label class="sr" for="ask-q" style="position:absolute;left:-9999px">Ask a question about the ground stop</label>
-      <input id="ask-q" type="search" maxlength="200" placeholder="Ask anything, e.g. what caused it?" enterkeyhint="search">
+      <input id="ask-q" type="search" maxlength="200" placeholder="Searches logged updates only, not the web" enterkeyhint="search">
       <button class="chip primary" id="ask-go" type="submit">Ask</button>
     </form>
     <div class="ask-out" id="ask-out" aria-live="polite"></div>
@@ -708,9 +708,7 @@ window.GSW_FEEDBACK_URL = "https://github.com/HubCatz202/faa-ground-stop-watch/i
   });
 
   tick();
-  /* Ask box. Answers come from the entries already on the page. If the site is
-     configured with an answer service (window.GSW_ASK_URL) the question goes
-     there instead, and that service may look things up on the web. */
+  /* Ask box. Answers come from the entries already on the page. No web lookup. */
   var STOP = {};
   "a an and are as at be been by can did do does for from had has have how i if in is it its me my of on or so that the their there they this to was were what when where which who why will with would you your about any still now get got going happen happened happening tell know latest flight flights ground stop faa".split(" ").forEach(function (w) { STOP[w] = 1; });
   var SYN = { cause: ["caused", "cause", "outage", "router", "routers", "telecommunications", "cyberattack", "why"], why: ["cause", "caused", "outage", "router", "routers"], over: ["lifted", "lift", "ended", "resume", "resuming"], lifted: ["lift", "lifted", "ended", "over"], cancel: ["canceled", "cancellations", "cancelled"], cancelled: ["canceled", "cancellations"], canceled: ["cancellations"], delay: ["delays", "delayed"], refund: ["refund", "refunds", "waiver", "waivers", "rebook"], hack: ["cyberattack", "nefarious", "attack"], hacked: ["cyberattack", "nefarious", "attack"], long: ["hours", "weekend", "recover", "recovery"] };
@@ -742,10 +740,7 @@ window.GSW_FEEDBACK_URL = "https://github.com/HubCatz202/faa-ground-stop-watch/i
     var hits = askLocal(q);
     if (note) out.appendChild(node("p", "src", note));
     if (!hits.length) {
-      out.appendChild(node("p", "lead", "Nothing logged here answers that yet."));
-      var p = node("p"), a = node("a", "", "Search the web for this");
-      a.href = "https://news.google.com/search?q=" + encodeURIComponent("FAA ground stop " + q); a.target = "_blank"; a.rel = "noopener";
-      p.appendChild(a); out.appendChild(p);
+      out.appendChild(node("p", "lead", "Nothing logged here answers that yet. Try different words."));
       return;
     }
     out.appendChild(node("p", "lead", "From what has been logged so far:"));
@@ -759,36 +754,10 @@ window.GSW_FEEDBACK_URL = "https://github.com/HubCatz202/faa-ground-stop-watch/i
     });
     out.appendChild(ul);
   }
-  function askRemote(q) {
-    var out = el("ask-out"); out.textContent = ""; out.appendChild(node("p", "src", "Looking that up"));
-    var ctx = items.slice().sort(function (a, b) { return time(b) - time(a); }).slice(0, 60).map(function (it) {
-      return { ts: it.date ? it.date.toISOString() : "", kind: it.kind, confidence: it.confidence, source: it.source, title: it.title, summary: it.summary, url: it.url };
-    });
-    return fetch(window.GSW_ASK_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question: q, status: { headline: el("headline").textContent, detail: el("detail").textContent }, items: ctx }) })
-      .then(function (r) { if (!r.ok) throw new Error("http " + r.status); return r.json(); })
-      .then(function (j) {
-        if (!j || !j.answer) throw new Error("empty");
-        out.textContent = "";
-        String(j.answer).split(/\n{2,}/).slice(0, 6).forEach(function (para) { out.appendChild(node("p", "", para)); });
-        var srcs = Array.isArray(j.sources) ? j.sources.slice(0, 6) : [];
-        if (srcs.length) {
-          var ul = node("ul");
-          srcs.forEach(function (s) {
-            if (!s || !/^https:\/\/[^\s"<>]+$/.test(String(s.url || ""))) return;
-            var li = node("li"), a = node("a", "", String(s.title || s.url).slice(0, 140)); a.href = s.url; a.target = "_blank"; a.rel = "noopener"; li.appendChild(a); ul.appendChild(li);
-          });
-          out.appendChild(ul);
-        }
-        out.appendChild(node("p", "src", j.usedWeb ? "Answered by Claude from the tracker and a live web search." : "Answered by Claude from the tracker."));
-      });
-  }
   el("ask-form").addEventListener("submit", function (e) {
     e.preventDefault();
     var q = el("ask-q").value.trim(); if (!q) return;
-    if (typeof window.GSW_ASK_URL === "string" && /^https:\/\//.test(window.GSW_ASK_URL)) {
-      el("ask-go").disabled = true;
-      askRemote(q).catch(function () { askShowLocal(q, "The answer service did not respond, so this is a direct match from the tracker."); }).then(function () { el("ask-go").disabled = false; });
-    } else askShowLocal(q);
+    askShowLocal(q);
   });
 
   setInterval(tick, 30000);
