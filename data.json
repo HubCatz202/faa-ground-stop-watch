@@ -1,11 +1,39 @@
 {
 "status": {
 "state": "lifted",
-"headline": "CNN, ABC and CNBC report the nationwide ground stop has been lifted",
-"detail": "CNN, ABC News and CNBC now report that the nationwide ground stop was lifted after roughly four hours, following the FAA's word that it was gradually easing restrictions as systems came back online. An airline source says the FAA traced the outage to a network router problem. CNBC says cancellations will stretch into the weekend, and the last tally showed more than 10,200 delays and over 4,000 cancellations.",
-"updatedAt": "2026-11-14T01:37:05Z"
+"headline": "FAA has lifted the nationwide ground stop",
+"detail": "The FAA says the nationwide ground stop is over and domestic departures are resuming, as reported by ABC News, NBC News and CNN. Homeland Security Secretary Markwayne Mullin says it was a telecommunications outage and not a cyberattack. ABC counts nearly 5,000 cancellations, and United and JetBlue are scrubbing most of tonight's remaining flights, so expect disruption into the weekend.",
+"updatedAt": "2026-11-14T01:39:33Z"
 },
 "items": [
+{
+"id": "20261114T0131Z-mullin-no-cyberattack-briefing",
+"ts": "2026-11-14T01:31:00Z",
+"claim": "cause:mullin-briefing-no-cyberattack",
+"kind": "official",
+"confidence": "confirmed",
+"source": "DHS Secretary Mullin, via ABC News live updates. Time is approximate.",
+"title": "Mullin at briefing: no cyberattack, public was never in danger",
+"summary": "Homeland Security Secretary Markwayne Mullin opened a press briefing with Transportation Secretary Duffy by repeating that there was no cyberattack. He said the public was never at risk during the outage. Officials continue to describe the cause as a telecommunications outage.",
+"event": "7. Political response",
+"url": "https://abcnews.com/US/live-updates/faa-ground-stop-live-updates-hundreds-flights-canceled/?id=138125140"
+},
+{
+"id": "20261114T0120Z-faa-ground-stop-lifted",
+"ts": "2026-11-14T01:20:00Z",
+"claim": "lift:faa-nationwide-ground-stop-lifted",
+"kind": "official",
+"confidence": "confirmed",
+"source": "FAA, via ABC News live updates. Time is approximate.",
+"title": "FAA lifts the nationwide ground stop",
+"summary": "The FAA says the nationwide ground stop has ended and domestic flights can depart again. Outlets differ on how long it lasted: ABC says more than four hours, NBC says more than five hours from the first public alert. Recovery will be slow, with nearly 5,000 flights canceled and United and JetBlue canceling most of tonight's remaining departures.",
+"event": "6. Lift and restart",
+"url": "https://abcnews.com/US/live-updates/faa-ground-stop-live-updates-hundreds-flights-canceled/?id=138125140",
+"echoes": [
+"NBC News live blog: FAA has lifted the nationwide ground stop",
+"CNN live updates: ground stop lifted, per FAA"
+]
+},
 {
 "id": "20261113T2200Z-delay-totals",
 "claim": "metric:national-delays-cancellations",
@@ -482,7 +510,7 @@
 "url": "https://www.cbsnews.com/news/faa-issues-nationwide-ground-stop/"
 }
 ],
-"exportedAt": "2026-11-14T01:37:51Z",
+"exportedAt": "2026-11-14T01:39:33Z",
 "topics": [
 {
 "label": "Speculation about the FAA's new AI tool",
