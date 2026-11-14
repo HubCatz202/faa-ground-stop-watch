@@ -3,7 +3,7 @@
 "state": "lifted",
 "headline": "FAA has lifted the nationwide ground stop",
 "detail": "The FAA says the nationwide ground stop is over and domestic departures are resuming, as reported by ABC News, NBC News and CNN. Homeland Security Secretary Markwayne Mullin says it was a telecommunications outage and not a cyberattack. ABC counts nearly 5,000 cancellations, and United and JetBlue are scrubbing most of tonight's remaining flights, so expect disruption into the weekend.",
-"updatedAt": "2026-11-14T02:09:29Z"
+"updatedAt": "2026-11-14T02:15:55Z"
 },
 "items": [
 {
@@ -218,7 +218,10 @@
 "title": "Delta and United waive change fees for travelers hit by the stop",
 "summary": "Delta is waiving change fees for travel on Friday and Saturday. United is waiving both change fees and fare differences for rebooked trips originally set between November 12 and November 20. The waivers give stranded and delayed passengers a way to move plans without extra cost as cancellations climb.",
 "url": "https://abcnews.com/US/live-updates/faa-ground-stop-live-updates-hundreds-flights-canceled/?id=138125140",
-"event": "5. Impact on flights and airlines"
+"event": "5. Impact on flights and airlines",
+"echoes": [
+"TheTravel headline: US airlines issue travel waivers"
+]
 },
 {
 "id": "20261113T2240Z-experts-weigh-in",
@@ -268,7 +271,8 @@
 "event": "3. Official statements",
 "url": "https://thehill.com/policy/transportation/6219722-faa-issues-us-flight-ground-stop",
 "echoes": [
-"AP: Mullin says president was briefed"
+"AP: Mullin says president was briefed",
+"YouTube: White House addresses ground stop live stream"
 ]
 },
 {
@@ -520,17 +524,17 @@
 "url": "https://www.cbsnews.com/news/faa-issues-nationwide-ground-stop/"
 }
 ],
-"exportedAt": "2026-11-14T02:10:07Z",
+"exportedAt": "2026-11-14T02:16:33Z",
 "topics": [
 {
 "label": "Speculation about the FAA's new AI tool",
 "platforms": [
 "News"
 ],
-"prevScore": 12,
-"score": 5,
+"prevScore": 5,
+"score": 2,
 "summary": "Axios flagged the FAA's new AI congestion tool, and a contractor has since told ABC News the program was not behind the stop.",
-"updatedAt": "2026-11-14T02:09:29Z",
+"updatedAt": "2026-11-14T02:15:55Z",
 "id": "ai-tool-speculation",
 "items": [
 "20261113T2141Z-axios-ai-tool",
@@ -541,12 +545,13 @@
 {
 "label": "ATC modernization money and blame",
 "platforms": [
-"News"
+"News",
+"YouTube"
 ],
-"prevScore": 16,
-"score": 24,
+"prevScore": 24,
+"score": 22,
 "summary": "Lawmakers want an explanation from DOT and the White House. Coverage is tying the outage to the pending 30 billion dollar request for the control system overhaul.",
-"updatedAt": "2026-11-14T02:09:29Z",
+"updatedAt": "2026-11-14T02:15:55Z",
 "id": "atc-funding-politics",
 "items": [
 "20261113T2220Z-trump-briefed-white-house",
@@ -558,12 +563,13 @@
 {
 "label": "Was it an attack?",
 "platforms": [
-"News"
+"News",
+"YouTube"
 ],
-"prevScore": 34,
-"score": 26,
+"prevScore": 26,
+"score": 28,
 "summary": "DHS says there is no sign of a hostile act so far and that it is unrelated to Thursday's Microsoft outage. CBS and ABC headlines say the White House sees no indication of a nefarious act, though nothing has been ruled out.",
-"updatedAt": "2026-11-14T02:09:29Z",
+"updatedAt": "2026-11-14T02:15:55Z",
 "id": "attack-question",
 "items": [
 "20261113T2205Z-dhs-mullin",
@@ -609,13 +615,15 @@
 {
 "label": "Refunds, waivers and airline stocks",
 "platforms": [
-"News"
+"News",
+"Local TV",
+"Trade press"
 ],
-"score": 13,
+"score": 35,
 "summary": "Delta and United have issued change-fee waivers, and consumer outlets are explaining what refunds travelers are owed for canceled flights.",
-"updatedAt": "2026-11-14T02:09:29Z",
+"updatedAt": "2026-11-14T02:15:55Z",
 "id": "refunds-and-airline-stocks",
-"prevScore": 3,
+"prevScore": 13,
 "items": [
 "20261113T2245Z-american-delta-statements",
 "20261113T2138Z-airlines-respond",
@@ -627,12 +635,13 @@
 "platforms": [
 "News",
 "Local TV",
-"Flight trackers"
+"Trade press",
+"YouTube"
 ],
-"prevScore": 88,
-"score": 95,
+"prevScore": 95,
+"score": 98,
 "summary": "CNN, ABC News and CNBC now report the nationwide stop has been lifted after about four hours. Delays and cancellations are expected to carry into the weekend.",
-"updatedAt": "2026-11-14T02:09:29Z",
+"updatedAt": "2026-11-14T02:15:55Z",
 "id": "restart-time",
 "items": [
 "20261114T0025Z-faa-gradually-lifting",
@@ -651,12 +660,14 @@
 {
 "label": "Stuck on planes and in terminals",
 "platforms": [
-"News"
+"News",
+"Local TV",
+"TikTok"
 ],
-"prevScore": 35,
-"score": 20,
+"prevScore": 20,
+"score": 26,
 "summary": "Passenger videos show cabins held at gates and on taxiways, bags being pulled, and travelers who had not heard about the stop.",
-"updatedAt": "2026-11-14T02:02:48Z",
+"updatedAt": "2026-11-14T02:15:55Z",
 "id": "stranded-passengers",
 "items": [
 "20261113T2245Z-american-delta-statements",
@@ -672,12 +683,13 @@
 "label": "Cancellations and the weekend knock-on",
 "platforms": [
 "News",
-"Local TV"
+"Local TV",
+"Trade press"
 ],
-"prevScore": 50,
-"score": 62,
+"prevScore": 62,
+"score": 61,
 "summary": "Delays are above 10,200 with more than 4,000 cancellations. Crew duty limits and out-of-position aircraft are expected to push disruption into the weekend.",
-"updatedAt": "2026-11-14T02:09:29Z",
+"updatedAt": "2026-11-14T02:15:55Z",
 "id": "weekend-knock-on",
 "items": [
 "20261113T2245Z-american-delta-statements",
@@ -694,12 +706,13 @@
 "label": "What actually failed at the FAA?",
 "platforms": [
 "News",
-"Local TV"
+"Local TV",
+"X"
 ],
-"prevScore": 72,
-"score": 65,
+"prevScore": 65,
+"score": 68,
 "summary": "The FAA calls it a temporary telecommunications outage. An airline source says the FAA has traced it to network routers, but the agency has not confirmed that on the record.",
-"updatedAt": "2026-11-14T02:09:29Z",
+"updatedAt": "2026-11-14T02:15:55Z",
 "id": "what-failed",
 "items": [
 "20261113T2215Z-faa-temporary-telecom-outage",
