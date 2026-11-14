@@ -98,7 +98,7 @@ a:hover { text-decoration: underline; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 8px; }
 
 /* Shared glass surface */
-.status, .howto, .fb, .card, .topic, .note {
+.status, .howto, .ask, .fb, .card, .topic, .note {
   background: var(--glass);
   -webkit-backdrop-filter: saturate(180%) blur(22px);
   backdrop-filter: saturate(180%) blur(22px);
@@ -161,6 +161,21 @@ h1 { font-family: var(--display); font-weight: 600; font-size: 19px; letter-spac
 .dot.live { background: var(--ok); box-shadow: 0 0 0 0 color-mix(in srgb, var(--ok) 60%, transparent); animation: ping 2.2s var(--ease) infinite; }
 .dot.stale { background: var(--warn); }
 @keyframes ping { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--ok) 55%, transparent); } 80%, 100% { box-shadow: 0 0 0 7px transparent; } }
+
+
+/* Ask */
+.ask { border-radius: var(--r-md); padding: 14px 18px; }
+.ask form { display: flex; gap: 8px; align-items: center; }
+.ask input { flex: 1; min-width: 0; font: inherit; font-size: 16px; color: var(--ink); background: transparent; border: 0.5px solid var(--line, rgba(128,128,128,.4)); border-radius: 999px; padding: 10px 16px; }
+.ask input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.ask-out { margin-top: 12px; }
+.ask-out:empty { display: none; }
+.ask-out p { margin: 0 0 10px; font-size: 16px; color: var(--ink); max-width: 64ch; }
+.ask-out .lead { font-weight: 600; }
+.ask-out .src { font-size: 14px; color: var(--muted); }
+.ask-out a { color: var(--accent); }
+.ask-out ul { margin: 0 0 10px; padding-left: 20px; }
+.ask-out li { margin: 0 0 8px; font-size: 16px; }
 
 /* How-to */
 .howto { border-radius: var(--r-md); padding: 0 18px; }
@@ -261,7 +276,7 @@ footer { font-size: 13px; color: var(--muted); border-top: .5px solid var(--hair
 }
 /* People who turn transparency down get solid surfaces. */
 @media (prefers-reduced-transparency: reduce) {
-  .status, .howto, .fb, .card, .topic, .note, header.top, .ev-head { -webkit-backdrop-filter: none; backdrop-filter: none; background: var(--panel); }
+  .status, .howto, .ask, .fb, .card, .topic, .note, header.top, .ev-head { -webkit-backdrop-filter: none; backdrop-filter: none; background: var(--panel); }
   header.top, .ev-head { background: var(--paper); }
 }
 @media (prefers-contrast: more) {
@@ -333,9 +348,18 @@ footer { font-size: 13px; color: var(--muted); border-top: .5px solid var(--hair
     <div class="fresh"><span class="dot" id="dot"></span><span id="fresh">Connecting to the feed</span></div>
   </section>
 
+  <section class="ask" id="ask" aria-label="Ask about the ground stop">
+    <form id="ask-form" autocomplete="off">
+      <label class="sr" for="ask-q" style="position:absolute;left:-9999px">Ask a question about the ground stop</label>
+      <input id="ask-q" type="search" maxlength="200" placeholder="Ask anything, e.g. what caused it?" enterkeyhint="search">
+      <button class="chip primary" id="ask-go" type="submit">Ask</button>
+    </form>
+    <div class="ask-out" id="ask-out" aria-live="polite"></div>
+  </section>
+
   <details class="howto" id="howto">
     <summary>How to use this tracker</summary>
-    <p>The card above says whether the ground stop is still in effect and when the feed was last checked. <strong>Timeline</strong> lists every update in time order with the newest at the top; tap Official, News or Social to see one kind of source. <strong>Trending</strong> ranks what people are talking about; tap a card to compare what officials, news outlets and social posts are each saying on that topic. A fresh pass over news and social sources runs about every 5 minutes and new entries appear on their own, so there is no need to reload. Tap any entry to open its source. Anything marked Unverified has not been confirmed by an official source. <a href="https://github.com/HubCatz202/faa-ground-stop-watch#readme" target="_blank" rel="noopener">How it works, in the README</a></p>
+    <p>The card above says whether the ground stop is still in effect and when the feed was last checked. Type a question in the Ask box to get an answer from everything logged so far. <strong>Timeline</strong> lists every update in time order with the newest at the top; tap Official, News or Social to see one kind of source. <strong>Trending</strong> ranks what people are talking about; tap a card to compare what officials, news outlets and social posts are each saying on that topic. A fresh pass over news and social sources runs about every 5 minutes and new entries appear on their own, so there is no need to reload. Tap any entry to open its source. Anything marked Unverified has not been confirmed by an official source. <a href="https://github.com/HubCatz202/faa-ground-stop-watch#readme" target="_blank" rel="noopener">How it works, in the README</a></p>
   </details>
 
   <div class="tabs" role="tablist" aria-label="Views">
@@ -684,6 +708,89 @@ window.GSW_FEEDBACK_URL = "https://github.com/HubCatz202/faa-ground-stop-watch/i
   });
 
   tick();
+  /* Ask box. Answers come from the entries already on the page. If the site is
+     configured with an answer service (window.GSW_ASK_URL) the question goes
+     there instead, and that service may look things up on the web. */
+  var STOP = {};
+  "a an and are as at be been by can did do does for from had has have how i if in is it its me my of on or so that the their there they this to was were what when where which who why will with would you your about any still now get got going happen happened happening tell know latest flight flights ground stop faa".split(" ").forEach(function (w) { STOP[w] = 1; });
+  var SYN = { cause: ["caused", "cause", "outage", "router", "routers", "telecommunications", "cyberattack", "why"], why: ["cause", "caused", "outage", "router", "routers"], over: ["lifted", "lift", "ended", "resume", "resuming"], lifted: ["lift", "lifted", "ended", "over"], cancel: ["canceled", "cancellations", "cancelled"], cancelled: ["canceled", "cancellations"], canceled: ["cancellations"], delay: ["delays", "delayed"], refund: ["refund", "refunds", "waiver", "waivers", "rebook"], hack: ["cyberattack", "nefarious", "attack"], hacked: ["cyberattack", "nefarious", "attack"], long: ["hours", "weekend", "recover", "recovery"] };
+  function words(t) { return (String(t).toLowerCase().match(/[a-z0-9]+/g) || []); }
+  function stem(w) { return w.length > 4 ? w.replace(/(ing|ed|es|s)$/, "") : w; }
+  function askLocal(q) {
+    var raw = words(q), terms = {};
+    raw.forEach(function (w) {
+      if (SYN[w]) SYN[w].forEach(function (x) { terms[stem(x)] = 1; });
+      if (!STOP[w] && w.length > 1) terms[stem(w)] = 2;
+    });
+    var keys = Object.keys(terms);
+    if (!keys.length) return [];
+    var scored = items.map(function (it) {
+      var t = {}, b = {};
+      words(it.title).forEach(function (w) { t[stem(w)] = 1; });
+      words(it.summary + " " + it.source + " " + it.echoes.join(" ")).forEach(function (w) { b[stem(w)] = 1; });
+      var sc = 0, hit = 0;
+      keys.forEach(function (k) { var h = (t[k] ? 3 : 0) + (b[k] ? 1 : 0); if (h) { hit++; sc += h * terms[k]; } });
+      if (it.kind === "official") sc *= 1.25;
+      if (it.confidence === "unverified") sc *= 0.7;
+      return { it: it, sc: sc * (hit / keys.length + 0.5) };
+    }).filter(function (x) { return x.sc >= 3; });
+    scored.sort(function (a, b) { return b.sc - a.sc || time(b.it) - time(a.it); });
+    return scored.slice(0, 3).map(function (x) { return x.it; });
+  }
+  function askShowLocal(q, note) {
+    var out = el("ask-out"); out.textContent = "";
+    var hits = askLocal(q);
+    if (note) out.appendChild(node("p", "src", note));
+    if (!hits.length) {
+      out.appendChild(node("p", "lead", "Nothing logged here answers that yet."));
+      var p = node("p"), a = node("a", "", "Search the web for this");
+      a.href = "https://news.google.com/search?q=" + encodeURIComponent("FAA ground stop " + q); a.target = "_blank"; a.rel = "noopener";
+      p.appendChild(a); out.appendChild(p);
+      return;
+    }
+    out.appendChild(node("p", "lead", "From what has been logged so far:"));
+    var ul = node("ul");
+    hits.forEach(function (it) {
+      var li = node("li"); li.appendChild(document.createTextNode(it.summary || it.title));
+      var src = node("div", "src"), href = it.url || linkMap[it.id] || "";
+      src.appendChild(document.createTextNode((CONF[it.confidence] ? CONF[it.confidence] + " · " : "") + it.source + (it.date ? " · " + local(it.date) : "") + " "));
+      if (href) { var a = node("a", "", "Open source"); a.href = href; a.target = "_blank"; a.rel = "noopener"; src.appendChild(a); }
+      li.appendChild(src); ul.appendChild(li);
+    });
+    out.appendChild(ul);
+  }
+  function askRemote(q) {
+    var out = el("ask-out"); out.textContent = ""; out.appendChild(node("p", "src", "Looking that up"));
+    var ctx = items.slice().sort(function (a, b) { return time(b) - time(a); }).slice(0, 60).map(function (it) {
+      return { ts: it.date ? it.date.toISOString() : "", kind: it.kind, confidence: it.confidence, source: it.source, title: it.title, summary: it.summary, url: it.url };
+    });
+    return fetch(window.GSW_ASK_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question: q, status: { headline: el("headline").textContent, detail: el("detail").textContent }, items: ctx }) })
+      .then(function (r) { if (!r.ok) throw new Error("http " + r.status); return r.json(); })
+      .then(function (j) {
+        if (!j || !j.answer) throw new Error("empty");
+        out.textContent = "";
+        String(j.answer).split(/\n{2,}/).slice(0, 6).forEach(function (para) { out.appendChild(node("p", "", para)); });
+        var srcs = Array.isArray(j.sources) ? j.sources.slice(0, 6) : [];
+        if (srcs.length) {
+          var ul = node("ul");
+          srcs.forEach(function (s) {
+            if (!s || !/^https:\/\/[^\s"<>]+$/.test(String(s.url || ""))) return;
+            var li = node("li"), a = node("a", "", String(s.title || s.url).slice(0, 140)); a.href = s.url; a.target = "_blank"; a.rel = "noopener"; li.appendChild(a); ul.appendChild(li);
+          });
+          out.appendChild(ul);
+        }
+        out.appendChild(node("p", "src", j.usedWeb ? "Answered by Claude from the tracker and a live web search." : "Answered by Claude from the tracker."));
+      });
+  }
+  el("ask-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var q = el("ask-q").value.trim(); if (!q) return;
+    if (typeof window.GSW_ASK_URL === "string" && /^https:\/\//.test(window.GSW_ASK_URL)) {
+      el("ask-go").disabled = true;
+      askRemote(q).catch(function () { askShowLocal(q, "The answer service did not respond, so this is a direct match from the tracker."); }).then(function () { el("ask-go").disabled = false; });
+    } else askShowLocal(q);
+  });
+
   setInterval(tick, 30000);
   setView(view, false);
   render(null);
