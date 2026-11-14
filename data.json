@@ -3,9 +3,57 @@
 "state": "lifted",
 "headline": "FAA has lifted the nationwide ground stop",
 "detail": "The FAA says the nationwide ground stop is over and domestic departures are resuming, as reported by ABC News, NBC News and CNN. Homeland Security Secretary Markwayne Mullin says it was a telecommunications outage and not a cyberattack. ABC counts nearly 5,000 cancellations, and United and JetBlue are scrubbing most of tonight's remaining flights, so expect disruption into the weekend.",
-"updatedAt": "2026-11-14T02:15:55Z"
+"updatedAt": "2026-11-14T02:21:54Z"
 },
 "items": [
+{
+"id": "20261114T0221Z-jetblue-cancels-domestic",
+"ts": "2026-11-14T02:21:54Z",
+"claim": "airlines:jetblue-cancels-remaining-domestic",
+"kind": "news",
+"confidence": "reported",
+"source": "Associated Press \"The Latest\", republished by WFMZ. Time is approximate.",
+"title": "JetBlue cancels all remaining domestic flights for the night",
+"summary": "JetBlue scrubbed every remaining domestic flight on its Friday schedule. The only departures it kept were Europe-bound flights out of Boston and New York JFK. The move points to disruption lasting beyond the end of the ground stop itself.",
+"url": "https://www.wfmz.com/news/ap/ap-national/the-latest-faa-grounds-all-flights-nationwide-due-to-communications-problems/article_ab428eed-c0e3-5b0c-887d-f0b305c5114f.html",
+"event": "5. Impact on flights and airlines"
+},
+{
+"id": "20261114T0221Z-mullin-microsoft-link",
+"ts": "2026-11-14T02:21:54Z",
+"claim": "cause:microsoft-outage-link-not-ruled-out",
+"kind": "official",
+"confidence": "reported",
+"source": "DHS Secretary Mullin, via Associated Press \"The Latest\", republished by WFMZ. Time is approximate.",
+"title": "Mullin does not rule out a link to Thursday's Microsoft outage",
+"summary": "Homeland Security Secretary Markwayne Mullin said FAA communication systems were overwhelmed and the root cause was still unknown. He declined to rule out a connection to a Microsoft outage the day before. Microsoft said it saw no link between its outage and the FAA failure.",
+"url": "https://www.wfmz.com/news/ap/ap-national/the-latest-faa-grounds-all-flights-nationwide-due-to-communications-problems/article_ab428eed-c0e3-5b0c-887d-f0b305c5114f.html",
+"event": "4. Cause and investigation"
+},
+{
+"id": "20261114T0221Z-sports-teams-stranded",
+"ts": "2026-11-14T02:21:54Z",
+"claim": "impact:sports-teams-travel-disrupted",
+"kind": "news",
+"confidence": "reported",
+"source": "Associated Press \"The Latest\", republished by WFMZ. Time is approximate.",
+"title": "Nets, Sharks and college football teams caught up in the stop",
+"summary": "The Brooklyn Nets were held aboard a halted plane in New Orleans and the San Jose Sharks were stuck ahead of a game in Utah. College football teams from Utah, Texas and Tennessee were also left waiting. With 14 NHL games set for Saturday, NFL and NHL teams faced uncertain weekend travel.",
+"url": "https://www.wfmz.com/news/ap/ap-national/the-latest-faa-grounds-all-flights-nationwide-due-to-communications-problems/article_ab428eed-c0e3-5b0c-887d-f0b305c5114f.html",
+"event": "5. Impact on flights and airlines"
+},
+{
+"id": "20261114T0221Z-nws-systems-operational",
+"ts": "2026-11-14T02:21:54Z",
+"claim": "statement:nws-radar-website-operational",
+"kind": "official",
+"confidence": "reported",
+"source": "National Weather Service, via Associated Press \"The Latest\", republished by WFMZ. Time is approximate.",
+"title": "Weather Service says its radar and website were never down",
+"summary": "The National Weather Service pushed back on reports that it was also having communication problems. It said its radar and website were fully operational throughout. The correction narrows the outage to FAA air traffic communications rather than wider federal systems.",
+"url": "https://www.wfmz.com/news/ap/ap-national/the-latest-faa-grounds-all-flights-nationwide-due-to-communications-problems/article_ab428eed-c0e3-5b0c-887d-f0b305c5114f.html",
+"event": "3. Official statements"
+},
 {
 "id": "20261114T0131Z-mullin-no-cyberattack-briefing",
 "ts": "2026-11-14T01:31:00Z",
@@ -182,6 +230,18 @@
 "id": "20261113T2253Z-flight-plan-drop-240"
 },
 {
+"id": "20261113T2250Z-cirium-600-diversions",
+"ts": "2026-11-13T22:50:00Z",
+"claim": "metric:diverted-flights",
+"kind": "news",
+"confidence": "reported",
+"source": "Associated Press \"The Latest\", republished by WFMZ, citing Cirium",
+"title": "Cirium counts at least 600 diverted flights, most sent back to origin",
+"summary": "Flight data firm Cirium counted at least 600 diversions by early evening Eastern time. Of those, 496 flights went back to the airports they left from and 104 landed somewhere else. About 11,000 flights carrying more than 1.5 million passengers had been scheduled to leave after 4 pm ET.",
+"url": "https://www.wfmz.com/news/ap/ap-national/the-latest-faa-grounds-all-flights-nationwide-due-to-communications-problems/article_ab428eed-c0e3-5b0c-887d-f0b305c5114f.html",
+"event": "5. Impact on flights and airlines"
+},
+{
 "claim": "scope:22-control-centers-hit",
 "confidence": "unverified",
 "echoes": [
@@ -257,7 +317,10 @@
 "title": "Contractor says the FAA's new AI program did not cause the stop",
 "summary": "A contractor told ABC News that a new artificial intelligence program was not behind the nationwide ground stop. The statement speaks to earlier speculation about the FAA's recently deployed AI congestion tool. ABC's update gives no further detail on what the contractor built or how it ruled the program out.",
 "url": "https://abcnews.com/US/live-updates/faa-ground-stop-live-updates-hundreds-flights-canceled/?id=138125140",
-"event": "4. Cause and investigation"
+"event": "4. Cause and investigation",
+"echoes": [
+"AP: ASI says SMART system not involved"
+]
 },
 {
 "id": "20261113T2220Z-trump-briefed-white-house",
@@ -318,7 +381,10 @@
 "summary": "Clips circulating from inside aircraft include an Atlanta pilot telling a Tampa-bound cabin the stop could last up to seven hours. Another passenger reported luggage being unloaded despite expecting a two-hour delay, and a reality TV personality posted that she was frightened. CNN crews at O'Hare and Newark said some travelers in the terminals did not yet know about the stop.",
 "title": "Passenger videos: pilots warn of hours-long waits, bags pulled off planes",
 "ts": "2026-11-13T22:10:00Z",
-"url": "https://www.tmz.com/2026/11/13/faa-orders-nationwide-ground-stop-causes-cross-country-chaos/"
+"url": "https://www.tmz.com/2026/11/13/faa-orders-nationwide-ground-stop-causes-cross-country-chaos/",
+"echoes": [
+"AP: Delta passenger filmed captain midair"
+]
 },
 {
 "id": "20261113T2205Z-atc-zero-claim",
@@ -346,6 +412,18 @@
 "echoes": [
 "AP: Mullin sees no indication of attack"
 ]
+},
+{
+"id": "20261113T2200Z-europe-canada-mexico-halt",
+"ts": "2026-11-13T22:00:00Z",
+"claim": "international:foreign-carriers-halt-us-bound-flights",
+"kind": "news",
+"confidence": "reported",
+"source": "Associated Press \"The Latest\", republished by WFMZ. Time is approximate.",
+"title": "Europe, Air Canada and Mexico halt flights bound for the US",
+"summary": "Europe's aviation safety agency suspended departures to the US until midnight at the FAA's request. Air Canada cancelled all of its US flights for the rest of the evening, and Mexico grounded its scheduled flights to the US. San Francisco airport did clear Pacific-bound departures, including flights to Hawaii and Asia, around the same time.",
+"url": "https://www.wfmz.com/news/ap/ap-national/the-latest-faa-grounds-all-flights-nationwide-due-to-communications-problems/article_ab428eed-c0e3-5b0c-887d-f0b305c5114f.html",
+"event": "5. Impact on flights and airlines"
 },
 {
 "id": "20261113T2158Z-lift-claims",
@@ -524,17 +602,17 @@
 "url": "https://www.cbsnews.com/news/faa-issues-nationwide-ground-stop/"
 }
 ],
-"exportedAt": "2026-11-14T02:16:33Z",
+"exportedAt": "2026-11-14T02:23:15Z",
 "topics": [
 {
 "label": "Speculation about the FAA's new AI tool",
 "platforms": [
 "News"
 ],
-"prevScore": 5,
-"score": 2,
+"prevScore": 2,
+"score": 13,
 "summary": "Axios flagged the FAA's new AI congestion tool, and a contractor has since told ABC News the program was not behind the stop.",
-"updatedAt": "2026-11-14T02:15:55Z",
+"updatedAt": "2026-11-14T02:21:54Z",
 "id": "ai-tool-speculation",
 "items": [
 "20261113T2141Z-axios-ai-tool",
@@ -545,13 +623,12 @@
 {
 "label": "ATC modernization money and blame",
 "platforms": [
-"News",
-"YouTube"
+"News"
 ],
-"prevScore": 24,
-"score": 22,
+"prevScore": 22,
+"score": 21,
 "summary": "Lawmakers want an explanation from DOT and the White House. Coverage is tying the outage to the pending 30 billion dollar request for the control system overhaul.",
-"updatedAt": "2026-11-14T02:15:55Z",
+"updatedAt": "2026-11-14T02:21:54Z",
 "id": "atc-funding-politics",
 "items": [
 "20261113T2220Z-trump-briefed-white-house",
@@ -566,10 +643,10 @@
 "News",
 "YouTube"
 ],
-"prevScore": 26,
-"score": 28,
-"summary": "DHS says there is no sign of a hostile act so far and that it is unrelated to Thursday's Microsoft outage. CBS and ABC headlines say the White House sees no indication of a nefarious act, though nothing has been ruled out.",
-"updatedAt": "2026-11-14T02:15:55Z",
+"prevScore": 28,
+"score": 41,
+"summary": "Officials keep saying there is no sign of an attack. DHS Secretary Mullin still would not rule out a link to Thursday's Microsoft outage, which Microsoft denies.",
+"updatedAt": "2026-11-14T02:21:54Z",
 "id": "attack-question",
 "items": [
 "20261113T2205Z-dhs-mullin",
@@ -577,7 +654,8 @@
 "20261113T2150Z-cnn-not-cyberattack",
 "20261113T2305Z-congress-not-briefed",
 "20261113T2240Z-experts-weigh-in",
-"20261113T2141Z-axios-ai-tool"
+"20261113T2141Z-axios-ai-tool",
+"20261114T0221Z-mullin-microsoft-link"
 ]
 },
 {
@@ -616,14 +694,13 @@
 "label": "Refunds, waivers and airline stocks",
 "platforms": [
 "News",
-"Local TV",
-"Trade press"
+"Local TV"
 ],
-"score": 35,
+"score": 50,
 "summary": "Delta and United have issued change-fee waivers, and consumer outlets are explaining what refunds travelers are owed for canceled flights.",
-"updatedAt": "2026-11-14T02:15:55Z",
+"updatedAt": "2026-11-14T02:21:54Z",
 "id": "refunds-and-airline-stocks",
-"prevScore": 13,
+"prevScore": 35,
 "items": [
 "20261113T2245Z-american-delta-statements",
 "20261113T2138Z-airlines-respond",
@@ -635,13 +712,13 @@
 "platforms": [
 "News",
 "Local TV",
-"Trade press",
-"YouTube"
+"YouTube",
+"Trade press"
 ],
-"prevScore": 95,
-"score": 98,
+"prevScore": 98,
+"score": 99,
 "summary": "CNN, ABC News and CNBC now report the nationwide stop has been lifted after about four hours. Delays and cancellations are expected to carry into the weekend.",
-"updatedAt": "2026-11-14T02:15:55Z",
+"updatedAt": "2026-11-14T02:21:54Z",
 "id": "restart-time",
 "items": [
 "20261114T0025Z-faa-gradually-lifting",
@@ -661,13 +738,14 @@
 "label": "Stuck on planes and in terminals",
 "platforms": [
 "News",
-"Local TV",
-"TikTok"
+"TikTok",
+"YouTube",
+"Local TV"
 ],
-"prevScore": 20,
-"score": 26,
+"prevScore": 26,
+"score": 46,
 "summary": "Passenger videos show cabins held at gates and on taxiways, bags being pulled, and travelers who had not heard about the stop.",
-"updatedAt": "2026-11-14T02:15:55Z",
+"updatedAt": "2026-11-14T02:21:54Z",
 "id": "stranded-passengers",
 "items": [
 "20261113T2245Z-american-delta-statements",
@@ -676,20 +754,21 @@
 "20261113T2210Z-passenger-videos",
 "20261113T2131Z-lax-tarmac-pilot",
 "20261113T2041Z-atc-app-x",
-"20261113T2328Z-wichita-flight-back-to-gate"
+"20261113T2328Z-wichita-flight-back-to-gate",
+"20261113T2250Z-cirium-600-diversions",
+"20261114T0221Z-sports-teams-stranded"
 ]
 },
 {
 "label": "Cancellations and the weekend knock-on",
 "platforms": [
 "News",
-"Local TV",
-"Trade press"
+"Local TV"
 ],
-"prevScore": 62,
-"score": 61,
+"prevScore": 61,
+"score": 72,
 "summary": "Delays are above 10,200 with more than 4,000 cancellations. Crew duty limits and out-of-position aircraft are expected to push disruption into the weekend.",
-"updatedAt": "2026-11-14T02:15:55Z",
+"updatedAt": "2026-11-14T02:21:54Z",
 "id": "weekend-knock-on",
 "items": [
 "20261113T2245Z-american-delta-statements",
@@ -699,20 +778,23 @@
 "20261113T2300Z-airports-out-of-space",
 "20261113T2210Z-passenger-videos",
 "20261113T2335Z-stop-runs-to-11pm-et",
-"20261113T2242Z-delta-united-waivers"
+"20261113T2242Z-delta-united-waivers",
+"20261113T2250Z-cirium-600-diversions",
+"20261113T2200Z-europe-canada-mexico-halt",
+"20261114T0221Z-jetblue-cancels-domestic",
+"20261114T0221Z-sports-teams-stranded"
 ]
 },
 {
 "label": "What actually failed at the FAA?",
 "platforms": [
 "News",
-"Local TV",
 "X"
 ],
-"prevScore": 65,
-"score": 68,
+"prevScore": 68,
+"score": 63,
 "summary": "The FAA calls it a temporary telecommunications outage. An airline source says the FAA has traced it to network routers, but the agency has not confirmed that on the record.",
-"updatedAt": "2026-11-14T02:15:55Z",
+"updatedAt": "2026-11-14T02:21:54Z",
 "id": "what-failed",
 "items": [
 "20261113T2215Z-faa-temporary-telecom-outage",
@@ -725,7 +807,24 @@
 "20261113T2105Z-examiner-frequency-outages",
 "20261113T2205Z-atc-zero-claim",
 "20261113T2246Z-fes-22-centers",
-"20261113T2231Z-contractor-ai-denial"
+"20261113T2231Z-contractor-ai-denial",
+"20261114T0221Z-mullin-microsoft-link",
+"20261114T0221Z-nws-systems-operational"
+]
+},
+{
+"id": "international-flights",
+"label": "What happened to international flights?",
+"score": 20,
+"updatedAt": "2026-11-14T02:21:54Z",
+"platforms": [
+"News"
+],
+"summary": "The FAA handled international flights case by case while Europe, Air Canada and Mexico paused US-bound service. Alaska and Hawaii intrastate flying and some transatlantic departures kept going.",
+"items": [
+"20261113T2200Z-europe-canada-mexico-halt",
+"20261114T0000Z-alaska-hawaiian",
+"20261114T0221Z-jetblue-cancels-domestic"
 ]
 }
 ]
