@@ -359,7 +359,7 @@ footer { font-size: 13px; color: var(--muted); border-top: .5px solid var(--hair
 
   <details class="howto" id="howto">
     <summary>How to use this tracker</summary>
-    <p>The card above says whether the ground stop is still in effect and when the feed was last checked. Type a question in the Ask box to get an answer from everything logged so far. <strong>Timeline</strong> lists every update in time order with the newest at the top; tap Official, News or Social to see one kind of source. <strong>Trending</strong> ranks what people are talking about; tap a card to compare what officials, news outlets and social posts are each saying on that topic. A fresh pass over news and social sources runs about every 5 minutes and new entries appear on their own, so there is no need to reload. Tap any entry to open its source. Anything marked Unverified has not been confirmed by an official source. <a href="https://github.com/HubCatz202/faa-ground-stop-watch#readme" target="_blank" rel="noopener">How it works, in the README</a></p>
+    <p>The card above says whether the ground stop is still in effect and when the feed was last checked. Type a question in the Ask box to get an answer from everything logged so far. <strong>Timeline</strong> lists every update in time order with the newest at the top; tap Official, News or Social to see one kind of source. <strong>Trending</strong> ranks what people are talking about; tap a card to compare what officials, news outlets and social posts are each saying on that topic. While the event was live, a fresh pass over news and social sources ran about every 5 minutes. Live updates have now ended. Tap any entry to open its source. Anything marked Unverified has not been confirmed by an official source. <a href="https://github.com/HubCatz202/faa-ground-stop-watch#readme" target="_blank" rel="noopener">How it works, in the README</a></p>
   </details>
 
   <div class="tabs" role="tablist" aria-label="Views">
@@ -419,6 +419,7 @@ window.GSW_FEEDBACK_URL = "https://github.com/HubCatz202/faa-ground-stop-watch/i
   var order = "desc";
   var eventFilter = "";
   var statusUpdatedAt = null;
+  var feedEnded = false;
   var feedState = "loading";
   var dbRef = null;
   var topics = [];
@@ -466,6 +467,7 @@ window.GSW_FEEDBACK_URL = "https://github.com/HubCatz202/faa-ground-stop-watch/i
     if (feedState === "loading") { dot.className = "dot"; fresh.textContent = "Connecting to the feed"; return; }
     var d = statusUpdatedAt;
     if (!d) { dot.className = "dot"; fresh.textContent = "Connected. Waiting for the first check."; return; }
+    if (feedEnded) { dot.className = "dot"; fresh.textContent = "Live updates ended " + d.toLocaleDateString([], { month: "short", day: "numeric" }) + " at " + local(d) + ". This page is now a record of the event."; return; }
     var stale = Date.now() - d.getTime() > STALE_MS;
     dot.className = "dot " + (stale ? "stale" : "live");
     fresh.textContent = "Last checked " + ago(d) + " (" + local(d) + ", " + zulu(d) + ")" + (stale ? ". Overdue for a refresh." : "");
@@ -486,6 +488,7 @@ window.GSW_FEEDBACK_URL = "https://github.com/HubCatz202/faa-ground-stop-watch/i
       el("headline").textContent = String(data.headline || "");
       el("detail").textContent = String(data.detail || "");
       statusUpdatedAt = parse(data.updatedAt);
+      feedEnded = data.ended === true;
     }
     renderFresh();
   }
