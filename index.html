@@ -370,11 +370,14 @@ footer { font-size: 13px; color: var(--muted); border-top: .5px solid var(--hair
 </div>
 
 <script>
-/* Hosted build: read the data file straight from the repo so new entries show within about a minute of each refresh. */
+/* Hosted build. Data sources, tried in order:
+   1. the repo's data branch through the GitHub API (freshest, but GitHub limits each network to 60 reads an hour)
+   2. the copy published with this site (about a minute behind; no limit)
+   3. the raw file (can be a few minutes behind) */
 window.GSW_DATA = [
   "https://api.github.com/repos/HubCatz202/faa-ground-stop-watch/contents/data.json?ref=data",
-  "https://raw.githubusercontent.com/HubCatz202/faa-ground-stop-watch/data/data.json",
-  "data.json"
+  "data.json?t=" + Date.now(),
+  "https://raw.githubusercontent.com/HubCatz202/faa-ground-stop-watch/data/data.json"
 ];
 window.GSW_FEEDBACK_URL = "https://github.com/HubCatz202/faa-ground-stop-watch/issues/new/choose";
 </script>
@@ -706,6 +709,7 @@ window.GSW_FEEDBACK_URL = "https://github.com/HubCatz202/faa-ground-stop-watch/i
   /* Signed-out visitors cannot read the live database, so the page falls back
      to data.json, a snapshot published alongside the page on every refresh. */
   var snapTimer = null;
+  var lastStamp = 0;
   function loadSnapshot() {
     function get(url) {
       var opt = { cache: "no-store" };
@@ -713,9 +717,19 @@ window.GSW_FEEDBACK_URL = "https://github.com/HubCatz202/faa-ground-stop-watch/i
       return fetch(url, opt).then(function (r) { if (!r.ok) throw new Error("http"); return r.json(); });
     }
     /* A hosted copy lists its data sources in window.GSW_DATA, freshest first. */
-    var urls = Array.isArray(window.GSW_DATA) && window.GSW_DATA.length ? window.GSW_DATA.slice() : ["data.json?t=" + Date.now(), "data.json"];
-    var chain = get(urls[0]);
-    urls.slice(1).forEach(function (u) { chain = chain.catch(function () { return get(u); }); });
+    var urls = Array.isArray(window.GSW_DATA) && window.GSW_DATA.length ? window.GSW_DATA.slice() : ["data.json"];
+    urls = urls.map(function (u) { return u.indexOf("data.json") === 0 ? "data.json?t=" + Date.now() : u; });
+    /* Ask every source at once and keep whichever answer is newest, so one slow,
+       cached or rate-limited source can never hold the page back. */
+    var stamp = function (j) { var d = j && j.status && parse(j.status.updatedAt); return d ? d.getTime() : 0; };
+    var chain = Promise.all(urls.map(function (u) { return get(u).catch(function () { return null; }); })).then(function (all) {
+      var best = null;
+      all.forEach(function (j) { if (j && (!best || stamp(j) > stamp(best))) best = j; });
+      if (!best) throw new Error("no data");
+      if (lastStamp && stamp(best) < lastStamp) throw new Error("older than shown");
+      lastStamp = stamp(best);
+      return best;
+    });
     chain.then(function (j) {
       var next = [], fresh = {}, ids = {};
       (Array.isArray(j.items) ? j.items : []).forEach(function (x) {
@@ -744,7 +758,8 @@ window.GSW_FEEDBACK_URL = "https://github.com/HubCatz202/faa-ground-stop-watch/i
       el("fb-open").parentNode.replaceChild(a, el("fb-open"));
     } else { el("fb-open").hidden = true; }
     loadSnapshot();
-    snapTimer = setInterval(loadSnapshot, 75000);
+    snapTimer = setInterval(loadSnapshot, 60000);
+    document.addEventListener("visibilitychange", function () { if (!document.hidden) loadSnapshot(); });
   }
 
   function start(db) {
