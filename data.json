@@ -3,7 +3,7 @@
 "state": "lifting",
 "headline": "FAA is gradually lifting the ground stop",
 "detail": "The FAA says it is gradually lifting restrictions and resuming normal operations as systems come back online, with some flights already cleared to depart. An airline source says the FAA has traced the outage to a problem with network routers. More than 10,200 flights are delayed and over 4,000 canceled, and delays will run well past the restart.",
-"updatedAt": "2026-11-14T00:58:46Z"
+"updatedAt": "2026-11-14T01:05:02Z"
 },
 "items": [
 {
@@ -64,7 +64,10 @@
 "title": "Flights within Alaska and Hawaii can still depart, airlines say",
 "summary": "Alaska Airlines and Hawaiian Airlines say flights within Alaska and within Hawaii are still able to depart. The carriers have canceled some flights and diverted others because of the stop. They warn it will take time for operations to recover once it is lifted.",
 "event": "5. Impact on flights and airlines",
-"url": "https://www.cnn.com/2026/11/13/us/live-news/flights-ground-stop-faa"
+"url": "https://www.cnn.com/2026/11/13/us/live-news/flights-ground-stop-faa",
+"echoes": [
+"ABC News: Boston Logan transatlantic departures"
+]
 },
 {
 "id": "20261113T2335Z-stop-runs-to-11pm-et",
@@ -166,6 +169,18 @@
 "url": "https://www.newsweek.com/faa-nationwide-ground-stop-airports-air-traffic-control-12713904"
 },
 {
+"id": "20261113T2242Z-delta-united-waivers",
+"ts": "2026-11-13T22:42:00Z",
+"claim": "airlines:delta-united-change-fee-waivers",
+"kind": "news",
+"confidence": "reported",
+"source": "Delta and United waivers, via ABC News live updates. Time is approximate.",
+"title": "Delta and United waive change fees for travelers hit by the stop",
+"summary": "Delta is waiving change fees for travel on Friday and Saturday. United is waiving both change fees and fare differences for rebooked trips originally set between November 12 and November 20. The waivers give stranded and delayed passengers a way to move plans without extra cost as cancellations climb.",
+"url": "https://abcnews.com/US/live-updates/faa-ground-stop-live-updates-hundreds-flights-canceled/?id=138125140",
+"event": "5. Impact on flights and airlines"
+},
+{
 "id": "20261113T2240Z-experts-weigh-in",
 "ts": "2026-11-13T22:40:00Z",
 "claim": "analysis:aviation-safety-experts",
@@ -188,6 +203,18 @@
 "summary": "One law enforcement source told CBS News the problem involves radio frequencies and how pilots communicate. A second source said TSA is still trying to pin down exactly where it began. This lines up with the early frequency-outage notices but is not an official finding.",
 "event": "4. Cause and investigation",
 "url": "https://www.latintimes.com/faa-freezes-us-departures-nationwide-communications-failure-601322"
+},
+{
+"id": "20261113T2231Z-contractor-ai-denial",
+"ts": "2026-11-13T22:31:00Z",
+"claim": "cause:contractor-says-ai-program-not-involved",
+"kind": "news",
+"confidence": "reported",
+"source": "Contractor, via ABC News live updates. Time is approximate.",
+"title": "Contractor says the FAA's new AI program did not cause the stop",
+"summary": "A contractor told ABC News that a new artificial intelligence program was not behind the nationwide ground stop. The statement speaks to earlier speculation about the FAA's recently deployed AI congestion tool. ABC's update gives no further detail on what the contractor built or how it ruled the program out.",
+"url": "https://abcnews.com/US/live-updates/faa-ground-stop-live-updates-hundreds-flights-canceled/?id=138125140",
+"event": "4. Cause and investigation"
 },
 {
 "id": "20261113T2220Z-trump-briefed-white-house",
@@ -446,21 +473,22 @@
 "url": "https://www.cbsnews.com/news/faa-issues-nationwide-ground-stop/"
 }
 ],
-"exportedAt": "2026-11-14T00:59:21Z",
+"exportedAt": "2026-11-14T01:06:06Z",
 "topics": [
 {
 "label": "Speculation about the FAA's new AI tool",
 "platforms": [
 "News"
 ],
-"prevScore": 1,
-"score": 12,
-"summary": "People are asking whether the FAA's new AI congestion tool played a part. There is no reported link.",
-"updatedAt": "2026-11-14T00:58:46Z",
+"prevScore": 12,
+"score": 11,
+"summary": "Axios flagged the FAA's new AI congestion tool, and a contractor has since told ABC News the program was not behind the stop.",
+"updatedAt": "2026-11-14T01:05:02Z",
 "id": "ai-tool-speculation",
 "items": [
 "20261113T2141Z-axios-ai-tool",
-"20261113T2205Z-dhs-mullin"
+"20261113T2205Z-dhs-mullin",
+"20261113T2231Z-contractor-ai-denial"
 ]
 },
 {
@@ -468,10 +496,10 @@
 "platforms": [
 "News"
 ],
-"prevScore": 10,
-"score": 4,
+"prevScore": 4,
+"score": 2,
 "summary": "Lawmakers want an explanation from DOT and the White House. Coverage is tying the outage to the pending 30 billion dollar request for the control system overhaul.",
-"updatedAt": "2026-11-14T00:58:46Z",
+"updatedAt": "2026-11-14T01:05:02Z",
 "id": "atc-funding-politics",
 "items": [
 "20261113T2220Z-trump-briefed-white-house",
@@ -483,12 +511,13 @@
 {
 "label": "Was it an attack?",
 "platforms": [
-"News"
+"News",
+"Local TV"
 ],
-"prevScore": 37,
-"score": 33,
+"prevScore": 33,
+"score": 37,
 "summary": "DHS says there is no sign of a hostile act so far and that it is unrelated to Thursday's Microsoft outage. CBS and ABC headlines say the White House sees no indication of a nefarious act, though nothing has been ruled out.",
-"updatedAt": "2026-11-14T00:58:46Z",
+"updatedAt": "2026-11-14T01:05:02Z",
 "id": "attack-question",
 "items": [
 "20261113T2205Z-dhs-mullin",
@@ -518,10 +547,10 @@
 "platforms": [
 "News"
 ],
-"prevScore": 3,
-"score": 1,
+"prevScore": 1,
+"score": 0,
 "summary": "Some accounts and at least one outlet said restrictions were easing. Nothing official supports that, and the FAA status site has been loading intermittently.",
-"updatedAt": "2026-11-14T00:58:46Z",
+"updatedAt": "2026-11-14T01:05:02Z",
 "id": "lift-rumors",
 "items": [
 "20261114T0025Z-faa-gradually-lifting",
@@ -534,28 +563,31 @@
 {
 "label": "Refunds, waivers and airline stocks",
 "platforms": [
-"News"
+"News",
+"Business press"
 ],
-"score": 16,
-"summary": "Coverage is turning to what stranded travelers are owed and how airline shares are reacting to the stop.",
-"updatedAt": "2026-11-14T00:58:46Z",
+"score": 36,
+"summary": "Delta and United have issued change-fee waivers, and consumer outlets are explaining what refunds travelers are owed for canceled flights.",
+"updatedAt": "2026-11-14T01:05:02Z",
 "id": "refunds-and-airline-stocks",
-"prevScore": 26,
+"prevScore": 16,
 "items": [
 "20261113T2245Z-american-delta-statements",
-"20261113T2138Z-airlines-respond"
+"20261113T2138Z-airlines-respond",
+"20261113T2242Z-delta-united-waivers"
 ]
 },
 {
 "label": "When do flights restart?",
 "platforms": [
 "News",
-"Local TV"
+"Local TV",
+"X"
 ],
-"prevScore": 57,
-"score": 47,
+"prevScore": 47,
+"score": 49,
 "summary": "The FAA says it is gradually lifting restrictions and some flights are already departing. No time has been given for a full return to normal.",
-"updatedAt": "2026-11-14T00:58:46Z",
+"updatedAt": "2026-11-14T01:05:02Z",
 "id": "restart-time",
 "items": [
 "20261114T0025Z-faa-gradually-lifting",
@@ -573,12 +605,15 @@
 {
 "label": "Stuck on planes and in terminals",
 "platforms": [
-"News"
+"News",
+"Local TV",
+"Video posts",
+"TikTok"
 ],
-"prevScore": 28,
-"score": 23,
+"prevScore": 23,
+"score": 57,
 "summary": "Passenger videos show cabins held at gates and on taxiways, bags being pulled, and travelers who had not heard about the stop.",
-"updatedAt": "2026-11-14T00:58:46Z",
+"updatedAt": "2026-11-14T01:05:02Z",
 "id": "stranded-passengers",
 "items": [
 "20261113T2245Z-american-delta-statements",
@@ -593,12 +628,13 @@
 {
 "label": "Cancellations and the weekend knock-on",
 "platforms": [
-"News"
+"News",
+"Flight trackers"
 ],
-"prevScore": 20,
-"score": 14,
+"prevScore": 14,
+"score": 30,
 "summary": "Delays are above 10,200 with more than 4,000 cancellations. Crew duty limits and out-of-position aircraft are expected to push disruption into the weekend.",
-"updatedAt": "2026-11-14T00:58:46Z",
+"updatedAt": "2026-11-14T01:05:02Z",
 "id": "weekend-knock-on",
 "items": [
 "20261113T2245Z-american-delta-statements",
@@ -607,20 +643,22 @@
 "20261113T2138Z-airlines-respond",
 "20261113T2300Z-airports-out-of-space",
 "20261113T2210Z-passenger-videos",
-"20261113T2335Z-stop-runs-to-11pm-et"
+"20261113T2335Z-stop-runs-to-11pm-et",
+"20261113T2242Z-delta-united-waivers"
 ]
 },
 {
 "label": "What actually failed at the FAA?",
 "platforms": [
 "News",
-"Trade press",
-"Local TV"
+"Wikipedia",
+"Local TV",
+"X"
 ],
-"prevScore": 92,
-"score": 97,
+"prevScore": 97,
+"score": 87,
 "summary": "The FAA calls it a temporary telecommunications outage. An airline source says the FAA has traced it to network routers, but the agency has not confirmed that on the record.",
-"updatedAt": "2026-11-14T00:58:46Z",
+"updatedAt": "2026-11-14T01:05:02Z",
 "id": "what-failed",
 "items": [
 "20261113T2215Z-faa-temporary-telecom-outage",
@@ -632,7 +670,8 @@
 "20261113T2335Z-arroyo-outdated-tech",
 "20261113T2105Z-examiner-frequency-outages",
 "20261113T2205Z-atc-zero-claim",
-"20261113T2246Z-fes-22-centers"
+"20261113T2246Z-fes-22-centers",
+"20261113T2231Z-contractor-ai-denial"
 ]
 }
 ]
