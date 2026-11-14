@@ -3,7 +3,7 @@
 "state": "lifted",
 "headline": "FAA has lifted the nationwide ground stop",
 "detail": "The FAA says the nationwide ground stop is over and domestic departures are resuming, as reported by ABC News, NBC News and CNN. Homeland Security Secretary Markwayne Mullin says it was a telecommunications outage and not a cyberattack. ABC counts nearly 5,000 cancellations, and United and JetBlue are scrubbing most of tonight's remaining flights, so expect disruption into the weekend.",
-"updatedAt": "2026-11-14T01:42:42Z"
+"updatedAt": "2026-11-14T01:49:49Z"
 },
 "items": [
 {
@@ -512,17 +512,17 @@
 "url": "https://www.cbsnews.com/news/faa-issues-nationwide-ground-stop/"
 }
 ],
-"exportedAt": "2026-11-14T01:43:14Z",
+"exportedAt": "2026-11-14T01:49:49Z",
 "topics": [
 {
 "label": "Speculation about the FAA's new AI tool",
 "platforms": [
 "News"
 ],
-"prevScore": 2,
-"score": 7,
+"prevScore": 7,
+"score": 3,
 "summary": "Axios flagged the FAA's new AI congestion tool, and a contractor has since told ABC News the program was not behind the stop.",
-"updatedAt": "2026-11-14T01:42:42Z",
+"updatedAt": "2026-11-14T01:49:49Z",
 "id": "ai-tool-speculation",
 "items": [
 "20261113T2141Z-axios-ai-tool",
@@ -535,10 +535,10 @@
 "platforms": [
 "News"
 ],
-"prevScore": 4,
-"score": 8,
+"prevScore": 8,
+"score": 9,
 "summary": "Lawmakers want an explanation from DOT and the White House. Coverage is tying the outage to the pending 30 billion dollar request for the control system overhaul.",
-"updatedAt": "2026-11-14T01:42:42Z",
+"updatedAt": "2026-11-14T01:49:49Z",
 "id": "atc-funding-politics",
 "items": [
 "20261113T2220Z-trump-briefed-white-house",
@@ -601,13 +601,14 @@
 {
 "label": "Refunds, waivers and airline stocks",
 "platforms": [
-"News"
+"News",
+"Local TV"
 ],
-"score": 6,
+"score": 20,
 "summary": "Delta and United have issued change-fee waivers, and consumer outlets are explaining what refunds travelers are owed for canceled flights.",
-"updatedAt": "2026-11-14T01:42:42Z",
+"updatedAt": "2026-11-14T01:49:49Z",
 "id": "refunds-and-airline-stocks",
-"prevScore": 14,
+"prevScore": 6,
 "items": [
 "20261113T2245Z-american-delta-statements",
 "20261113T2138Z-airlines-respond",
@@ -617,14 +618,12 @@
 {
 "label": "When do flights restart?",
 "platforms": [
-"News",
-"Local TV",
-"Trade press"
+"News"
 ],
-"prevScore": 77,
-"score": 79,
+"prevScore": 79,
+"score": 56,
 "summary": "CNN, ABC News and CNBC now report the nationwide stop has been lifted after about four hours. Delays and cancellations are expected to carry into the weekend.",
-"updatedAt": "2026-11-14T01:42:42Z",
+"updatedAt": "2026-11-14T01:49:49Z",
 "id": "restart-time",
 "items": [
 "20261114T0025Z-faa-gradually-lifting",
@@ -645,10 +644,10 @@
 "News",
 "Local TV"
 ],
-"prevScore": 28,
-"score": 29,
+"prevScore": 29,
+"score": 42,
 "summary": "Passenger videos show cabins held at gates and on taxiways, bags being pulled, and travelers who had not heard about the stop.",
-"updatedAt": "2026-11-14T01:42:42Z",
+"updatedAt": "2026-11-14T01:49:49Z",
 "id": "stranded-passengers",
 "items": [
 "20261113T2245Z-american-delta-statements",
@@ -665,10 +664,10 @@
 "platforms": [
 "News"
 ],
-"prevScore": 34,
-"score": 38,
+"prevScore": 38,
+"score": 27,
 "summary": "Delays are above 10,200 with more than 4,000 cancellations. Crew duty limits and out-of-position aircraft are expected to push disruption into the weekend.",
-"updatedAt": "2026-11-14T01:42:42Z",
+"updatedAt": "2026-11-14T01:49:49Z",
 "id": "weekend-knock-on",
 "items": [
 "20261113T2245Z-american-delta-statements",
@@ -685,13 +684,12 @@
 "label": "What actually failed at the FAA?",
 "platforms": [
 "News",
-"Trade press",
 "Local TV"
 ],
-"prevScore": 68,
-"score": 69,
+"prevScore": 69,
+"score": 52,
 "summary": "The FAA calls it a temporary telecommunications outage. An airline source says the FAA has traced it to network routers, but the agency has not confirmed that on the record.",
-"updatedAt": "2026-11-14T01:42:42Z",
+"updatedAt": "2026-11-14T01:49:49Z",
 "id": "what-failed",
 "items": [
 "20261113T2215Z-faa-temporary-telecom-outage",
