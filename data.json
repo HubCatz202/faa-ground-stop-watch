@@ -3,7 +3,7 @@
 "state": "lifted",
 "headline": "FAA has lifted the nationwide ground stop",
 "detail": "The FAA says the nationwide ground stop is over and domestic departures are resuming, as reported by ABC News, NBC News and CNN. Homeland Security Secretary Markwayne Mullin says it was a telecommunications outage and not a cyberattack. ABC counts nearly 5,000 cancellations, and United and JetBlue are scrubbing most of tonight's remaining flights, so expect disruption into the weekend.",
-"updatedAt": "2026-11-14T03:08:31Z"
+"updatedAt": "2026-11-14T03:14:22Z"
 },
 "items": [
 {
@@ -287,7 +287,8 @@
 "TheTravel headline: US airlines issue travel waivers",
 "Click2Houston: United issues travel waivers",
 "LiveNOW from FOX: airlines issue travel waivers",
-"WCPO: rebooking and refunds explainer"
+"WCPO: rebooking and refunds explainer",
+"NBC Chicago: rebooking and refund options"
 ]
 },
 {
@@ -394,7 +395,8 @@
 "NPR: travelers share tarmac experiences",
 "NBC Los Angeles video: passengers stuck at SoCal airports",
 "Yahoo: Frontier passengers stuck at LaGuardia for hours",
-"Phoenix New Times: stranded passengers at Sky Harbor"
+"Phoenix New Times: stranded passengers at Sky Harbor",
+"Yahoo: MHT passengers deal with delays"
 ]
 },
 {
@@ -615,7 +617,7 @@
 "url": "https://www.cbsnews.com/news/faa-issues-nationwide-ground-stop/"
 }
 ],
-"exportedAt": "2026-11-14T03:08:31Z",
+"exportedAt": "2026-11-14T03:14:31Z",
 "topics": [
 {
 "label": "Speculation about the FAA's new AI tool",
@@ -638,10 +640,10 @@
 "platforms": [
 "News"
 ],
-"prevScore": 12,
-"score": 11,
+"prevScore": 11,
+"score": 4,
 "summary": "Lawmakers want an explanation from DOT and the White House. Coverage is tying the outage to the pending 30 billion dollar request for the control system overhaul.",
-"updatedAt": "2026-11-14T03:08:31Z",
+"updatedAt": "2026-11-14T03:14:22Z",
 "id": "atc-funding-politics",
 "items": [
 "20261113T2220Z-trump-briefed-white-house",
@@ -655,10 +657,10 @@
 "platforms": [
 "News"
 ],
-"prevScore": 20,
-"score": 26,
+"prevScore": 26,
+"score": 22,
 "summary": "Officials keep saying there is no sign of an attack. DHS Secretary Mullin still would not rule out a link to Thursday's Microsoft outage, which Microsoft denies.",
-"updatedAt": "2026-11-14T03:08:31Z",
+"updatedAt": "2026-11-14T03:14:22Z",
 "id": "attack-question",
 "items": [
 "20261113T2205Z-dhs-mullin",
@@ -705,13 +707,14 @@
 {
 "label": "Refunds, waivers and airline stocks",
 "platforms": [
-"News"
+"News",
+"Local TV"
 ],
-"score": 24,
+"score": 46,
 "summary": "Delta and United have issued change-fee waivers, and consumer outlets are explaining what refunds travelers are owed for canceled flights.",
-"updatedAt": "2026-11-14T03:08:31Z",
+"updatedAt": "2026-11-14T03:14:22Z",
 "id": "refunds-and-airline-stocks",
-"prevScore": 46,
+"prevScore": 24,
 "items": [
 "20261113T2245Z-american-delta-statements",
 "20261113T2138Z-airlines-respond",
@@ -748,12 +751,14 @@
 {
 "label": "Stuck on planes and in terminals",
 "platforms": [
-"News"
+"News",
+"Local TV",
+"TikTok"
 ],
-"prevScore": 45,
-"score": 30,
+"prevScore": 30,
+"score": 54,
 "summary": "Passenger videos show cabins held at gates and on taxiways, bags being pulled, and travelers who had not heard about the stop.",
-"updatedAt": "2026-11-14T03:08:31Z",
+"updatedAt": "2026-11-14T03:14:22Z",
 "id": "stranded-passengers",
 "items": [
 "20261113T2245Z-american-delta-statements",
@@ -773,10 +778,10 @@
 "News",
 "Local TV"
 ],
-"prevScore": 64,
-"score": 50,
+"prevScore": 50,
+"score": 80,
 "summary": "Delays are above 10,200 with more than 4,000 cancellations. Crew duty limits and out-of-position aircraft are expected to push disruption into the weekend.",
-"updatedAt": "2026-11-14T03:08:31Z",
+"updatedAt": "2026-11-14T03:14:22Z",
 "id": "weekend-knock-on",
 "items": [
 "20261113T2245Z-american-delta-statements",
@@ -797,12 +802,12 @@
 "label": "What actually failed at the FAA?",
 "platforms": [
 "News",
-"Trade press"
+"Local TV"
 ],
-"prevScore": 45,
-"score": 54,
+"prevScore": 54,
+"score": 40,
 "summary": "The FAA calls it a temporary telecommunications outage. An airline source says the FAA has traced it to network routers, but the agency has not confirmed that on the record.",
-"updatedAt": "2026-11-14T03:08:31Z",
+"updatedAt": "2026-11-14T03:14:22Z",
 "id": "what-failed",
 "items": [
 "20261113T2215Z-faa-temporary-telecom-outage",
@@ -823,8 +828,8 @@
 {
 "id": "international-flights",
 "label": "What happened to international flights?",
-"score": 9,
-"updatedAt": "2026-11-14T03:08:31Z",
+"score": 4,
+"updatedAt": "2026-11-14T03:14:22Z",
 "platforms": [
 "News"
 ],
@@ -834,7 +839,7 @@
 "20261114T0000Z-alaska-hawaiian",
 "20261114T0221Z-jetblue-cancels-domestic"
 ],
-"prevScore": 8
+"prevScore": 9
 }
 ]
 }
