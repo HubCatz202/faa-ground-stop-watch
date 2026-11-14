@@ -3,7 +3,8 @@
 "state": "lifted",
 "headline": "FAA has lifted the nationwide ground stop",
 "detail": "The FAA says the nationwide ground stop is over and domestic departures are resuming, as reported by ABC News, NBC News and CNN. Homeland Security Secretary Markwayne Mullin says it was a telecommunications outage and not a cyberattack. ABC counts nearly 5,000 cancellations, and United and JetBlue are scrubbing most of tonight's remaining flights, so expect disruption into the weekend.",
-"updatedAt": "2026-11-14T03:14:22Z"
+"updatedAt": "2026-11-14T03:14:22Z",
+"ended": true
 },
 "items": [
 {
@@ -617,7 +618,7 @@
 "url": "https://www.cbsnews.com/news/faa-issues-nationwide-ground-stop/"
 }
 ],
-"exportedAt": "2026-11-14T03:14:31Z",
+"exportedAt": "2026-11-14T03:16:25Z",
 "topics": [
 {
 "label": "Speculation about the FAA's new AI tool",
